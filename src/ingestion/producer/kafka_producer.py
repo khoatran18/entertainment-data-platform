@@ -38,7 +38,7 @@ class KafkaProducerService:
         """
 
         try:
-            payload = json.dumps(value).encode('utf-8')
+            payload = json.dumps(value, ensure_ascii=False).encode('utf-8')
             key = str(random.randint(0, 10)).encode('utf-8')
 
             self.producer.produce(

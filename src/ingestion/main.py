@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+import time
 
 from common.logging_config import setup_logging
 from ingestion.config.settings import load_settings
@@ -18,7 +19,6 @@ def main():
         # Load config
         logger.info("Loading configuration...")
         settings = load_settings()
-        setup_logging()
         logger.info("Configuration loaded")
 
         # Init Kafka Producer
@@ -47,6 +47,8 @@ def main():
             if record_flush_buffer >= settings.kafka.producer.max_buffer:
                 producer.flush()
                 record_flush_buffer = 0
+                time.sleep(1)
+
             logger.info("Processed %d records", total_record_count)
 
     except Exception as e:

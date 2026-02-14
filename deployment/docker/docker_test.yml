@@ -34,6 +34,20 @@ services:
     networks:
       - test-network
 
+  minio:
+    container_name: minio
+    image: minio/minio
+    restart: unless-stopped
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    networks:
+      - test-network
+    command: server --console-address ":9001" /data
+
 networks:
   test-network:
     driver: bridge

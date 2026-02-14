@@ -1,0 +1,24 @@
+sources:
+  kafka:
+    topics:
+      movie: tmdb.movies.raw
+      tv_series: tmdb.tv_series.raw
+      person: tmdb.people.raw
+    server:
+      bootstrap_servers: localhost:9092
+
+stream:
+  watermark: "10 minutes"
+
+sinks:
+  delta_lake:
+    target_name_folder:
+      movie: "movies"
+      tv_series: "tvseries"
+      person: "people"
+    tables:
+      valid_base_path: "s3a://deltalake/bronze/valid"
+      invalid_base_path: "s3a://deltalake/bronze/invalid"
+    checkpoints:
+      valid_base_path: "s3a://deltalake/_checkpoints/_valid"
+      invalid_base_path: "s3a://deltalake/_checkpoints/_invalid"
