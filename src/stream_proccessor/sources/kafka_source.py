@@ -11,6 +11,9 @@ def read_kafka_stream(
         settings: Settings,
         topic: str
 ) -> DataFrame:
+    """
+    Create Spark Kafka stream
+    """
 
     return (spark.readStream
                 .format("kafka") \

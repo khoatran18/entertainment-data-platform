@@ -18,8 +18,8 @@ def log_batch(df, batch_id):
 
 
 def run_stream():
+    # Initial setup
     setup_logging()
-
     logger.info("Streaming Processor service starting...")
     logger.info("Loading configuration...")
     settings = load_settings()
@@ -27,6 +27,8 @@ def run_stream():
 
     queries = []
 
+    # Create Spark session
+    logger.info("Starting Spark session...")
     builder = (
         SparkSession.builder \
             .appName("KafkaStreamToDelta") \
@@ -46,23 +48,30 @@ def run_stream():
     )
     spark = builder.getOrCreate()
 
+    # Start create Kafka streams logic
+    logger.info("Spark session started")
+    logger.info("Start creating Kafka streams logic...")
     for name, topic in settings.sources.kafka.topics:
+
+        # Process DataFrame
+        logger.info("Creating stream logic for topic: %s", topic)
         raw_df = read_kafka_stream(spark, settings, topic)
         processed_df = process_event(raw_df)
 
+        # Get Delta Lake paths
+        logger.info("Get all folder names")
         target_folder = settings.sinks.delta_lake.target_name_folder.model_dump()[name]
 
         valid_table_path = f"{settings.sinks.delta_lake.tables.valid_base_path}/{target_folder}"
         invalid_table_path = f"{settings.sinks.delta_lake.tables.invalid_base_path}/{target_folder}"
         valid_checkpoint_path = f"{settings.sinks.delta_lake.checkpoints.valid_base_path}/{target_folder}"
         invalid_checkpoint_path = f"{settings.sinks.delta_lake.checkpoints.invalid_base_path}/{target_folder}"
+        logger.infor("All path for topic %s: \nvalid_table_path: %s \ninvalid_table_path: %s \nvalid_checkpoint_path: %s \ninvalid_checkpoint_path: %s", name, valid_table_path, invalid_table_path, valid_checkpoint_path, invalid_checkpoint_path)
 
+        # Create and append queries
         valid_query, invalid_query = delta_lake_sink_dql(processed_df, valid_table_path, invalid_table_path, valid_checkpoint_path, invalid_checkpoint_path)
         queries.append(valid_query)
         queries.append(invalid_query)
-
-        # query = delta_lake_sink(processed_df, valid_table_path, valid_checkpoint_path)
-        # queries.append(query)
 
     for query in queries:
         query.awaitTermination()
