@@ -31,15 +31,17 @@ def valid_full_schema(df: DataFrame):
     Check valid schema by adding boolean value to Column "valid_schema"
     """
     id_info = from_json(col("raw_df"), ID_SCHEMA)
+    df.withColumn("id_info", id_info)
     return df.withColumn("id_info", id_info) \
+                .withColumn(
+                    "id_of_data_type",
+                    coalesce(col("id_info.person_id"), col("id_info.movie_id"), col("id_info.tv_series_id"))
+                ) \
                 .withColumn(
                 "valid_schema",
                 col("data_type").isNotNull() &
                 col("data_label").isNotNull() &
                 col("timestamp").isNotNull() &
-                coalesce(
-                    col("id_info.person_id"),
-                    col("id_info.movie_id"),
-                    col("id_info.tv_series_id")
-                ).isNotNull()
-            ).drop("id_info")
+                col("id_of_data_type").isNotNull()
+            ) \
+            .drop("id_info")

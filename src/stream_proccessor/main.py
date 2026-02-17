@@ -5,6 +5,7 @@ import logging
 from delta import *
 
 from common.logging_config import setup_logging
+from common.load_path_config import get_valid_invalid_path
 from stream_proccessor.config.settings import load_settings
 from stream_proccessor.processor.event_processor import process_event
 from stream_proccessor.sinks.delta_lake_sink import delta_lake_sink, delta_lake_sink_dql
@@ -40,9 +41,9 @@ def run_stream():
             .config("spark.jars.packages",
                     "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1," "io.delta:delta-spark_2.12:3.2.0," "org.apache.hadoop:hadoop-aws:3.3.4") \
             .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
-            .config("spark.hadoop.fs.s3a.endpoint", "http://localhost:9000") \
-            .config("spark.hadoop.fs.s3a.access.key", "minio") \
-            .config("spark.hadoop.fs.s3a.secret.key", "minio123") \
+            .config("spark.hadoop.fs.s3a.endpoint", settings.sinks.delta_lake.minio_endpoint) \
+            .config("spark.hadoop.fs.s3a.access.key", settings.sinks.delta_lake.minio_access_key) \
+            .config("spark.hadoop.fs.s3a.secret.key", settings.sinks.delta_lake.minio_secret_key) \
             .config("spark.hadoop.fs.s3a.path.style.access", "true") \
 
     )
@@ -62,11 +63,10 @@ def run_stream():
         logger.info("Get all folder names")
         target_folder = settings.sinks.delta_lake.target_name_folder.model_dump()[name]
 
-        valid_table_path = f"{settings.sinks.delta_lake.tables.valid_base_path}/{target_folder}"
-        invalid_table_path = f"{settings.sinks.delta_lake.tables.invalid_base_path}/{target_folder}"
-        valid_checkpoint_path = f"{settings.sinks.delta_lake.checkpoints.valid_base_path}/{target_folder}"
-        invalid_checkpoint_path = f"{settings.sinks.delta_lake.checkpoints.invalid_base_path}/{target_folder}"
-        logger.infor("All path for topic %s: \nvalid_table_path: %s \ninvalid_table_path: %s \nvalid_checkpoint_path: %s \ninvalid_checkpoint_path: %s", name, valid_table_path, invalid_table_path, valid_checkpoint_path, invalid_checkpoint_path)
+        # Get Path
+        valid_table_path, invalid_table_path = get_valid_invalid_path(settings.sinks.delta_lake.tables, target_folder)
+        valid_checkpoint_path, invalid_checkpoint_path = get_valid_invalid_path(settings.sinks.delta_lake.checkpoints, target_folder)
+        logger.info("All path for topic %s: \nvalid_table_path: %s \ninvalid_table_path: %s \nvalid_checkpoint_path: %s \ninvalid_checkpoint_path: %s", name, valid_table_path, invalid_table_path, valid_checkpoint_path, invalid_checkpoint_path)
 
         # Create and append queries
         valid_query, invalid_query = delta_lake_sink_dql(processed_df, valid_table_path, invalid_table_path, valid_checkpoint_path, invalid_checkpoint_path)

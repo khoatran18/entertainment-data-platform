@@ -7,56 +7,72 @@ from pydantic import BaseModel
 logger = logging.getLogger(__name__)
 BASE_DIR = Path(__file__).resolve().parent
 
-# Sources setting
-class KafkaTopicSettings(BaseModel):
-    movie: str
-    tv_series: str
-    person: str
-
-class KafkaServerSettings(BaseModel):
-    bootstrap_servers: str
-
-class KafkaSettings(BaseModel):
-    topics: KafkaTopicSettings
-    server: KafkaServerSettings
-
-class SourcesSettings(BaseModel):
-    kafka: KafkaSettings
-
-# Stream setting
-class StreamSettings(BaseModel):
-    watermark: str
-
-# Sinks setting
+##### DeltaLake setting
 class DeltaLakeTargetNameFolderSettings(BaseModel):
     movie: str
     person: str
     tv_series: str
 
+# Delta Lake tables
+class DeltaLakeBronzeTablesSettings(BaseModel):
+    valid_base_path: str
+    invalid_base_path: str
+
+class DeltaLakeSilverTablesSettings(BaseModel):
+    valid_base_path: str
+    invalid_base_path: str
+
 class DeltaLakeTablesSettings(BaseModel):
+    bronze_layer: DeltaLakeBronzeTablesSettings
+    silver_layer: DeltaLakeSilverTablesSettings
+
+# Delta Lake checkpoints
+class DeltaLakeCheckpointToDeltaSettings(BaseModel):
+    valid_base_path: str
+    invalid_base_path: str
+
+class DeltaLakeCheckpointToClickhouseSettings(BaseModel):
     valid_base_path: str
     invalid_base_path: str
 
 class DeltaLakeCheckpointsSettings(BaseModel):
-    valid_base_path: str
-    invalid_base_path: str
+    write_to_delta: DeltaLakeCheckpointToDeltaSettings
+    write_to_clickhouse: DeltaLakeCheckpointToClickhouseSettings
 
+# Full Delta Lake settings
 class DeltaLakeSettings(BaseModel):
     minio_endpoint: str
     minio_access_key: str
     minio_secret_key: str
     target_name_folder: DeltaLakeTargetNameFolderSettings
     tables: DeltaLakeTablesSettings
-    checkpoints: DeltaLakeCheckpointsSettings
 
-class SinksSettings(BaseModel):
+##### Clickhouse setting
+class ClickhouseTablesSettings(BaseModel):
+    movie: str
+    person: str
+    tv_series: str
+
+class ClickhouseSettings(BaseModel):
+    host: str
+    port: int
+    database: str
+    tables: ClickhouseTablesSettings
+
+##### Storage setting
+class StorageSettings(BaseModel):
     delta_lake: DeltaLakeSettings
+    clickhouse: ClickhouseSettings
 
-# Main settings
+##### Spark setting
+class SparkSettings(BaseModel):
+    app_name_1: str
+    app_name_2: str
+
+##### Main settings
 class Settings(BaseModel):
-    sources: SourcesSettings
-    stream: StreamSettings
-    sinks: SinksSettings
+    storage: StorageSettings
+    spark: SparkSettings
 
 def load_settings() -> Settings:
     """

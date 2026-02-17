@@ -1,0 +1,36 @@
+storage:
+  delta_lake:
+    minio_endpoint: "http://localhost:9000"
+    minio_access_key: "minio"
+    minio_secret_key: "minio123"
+    target_name_folder:
+      movie: "movies"
+      tv_series: "tvseries"
+      person: "people"
+    tables:
+      bronze_layer:
+        valid_base_path: "s3a://deltalake/bronze/valid"
+        invalid_base_path: "s3a://deltalake/bronze/invalid"
+      silver_layer:
+        valid_base_path: "s3a://deltalake/silver/valid"
+        invalid_base_path: "s3a://deltalake/silver/invalid" # Not used yet
+    checkpoints:
+      write_to_delta:
+        valid_base_path: "s3a://deltalake/silver/to_delta/_checkpoints/_valid"
+        invalid_base_path: "s3a://deltalake/silver/to_delta/_checkpoints/_invalid" # Not used yet
+      write_to_clickhouse:
+        valid_base_path: "s3a://deltalake/silver/to_clickhouse/_checkpoints/_valid"
+        invalid_base_path: "s3a://deltalake/silver/to_clickhouse/_checkpoints/_invalid" # Not used yet
+
+  clickhouse:
+    host: "localhost"
+    port: 8123
+    database: "silver"
+    tables:
+      movie: "movies"
+      person: "people"
+      tv_series: "tv_series"
+
+spark:
+  app_name_1: "bronze_to_silver"
+  app_name_2: "silver_to_gold"

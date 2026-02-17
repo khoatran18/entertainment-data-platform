@@ -12,6 +12,9 @@ stream:
 
 sinks:
   delta_lake:
+    minio_endpoint: "http://localhost:9000"
+    minio_access_key: "minio"
+    minio_secret_key: "minio123"
     target_name_folder:
       movie: "movies"
       tv_series: "tvseries"
@@ -20,5 +23,5 @@ sinks:
       valid_base_path: "s3a://deltalake/bronze/valid"
       invalid_base_path: "s3a://deltalake/bronze/invalid"
     checkpoints:
-      valid_base_path: "s3a://deltalake/_checkpoints/_valid"
-      invalid_base_path: "s3a://deltalake/_checkpoints/_invalid"
+      valid_base_path: "s3a://deltalake/bronze/_checkpoints/_valid"
+      invalid_base_path: "s3a://deltalake/bronze/_checkpoints/_invalid"
