@@ -4,6 +4,9 @@ from batch_jobs.config.settings import Settings
 
 
 class DeltaMinioWriter:
+    """
+    reate Delta table writer from Minio by Spark
+    """
 
     def __init__(self, spark: SparkSession):
         self.spark = spark

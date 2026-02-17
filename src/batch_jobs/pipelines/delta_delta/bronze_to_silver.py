@@ -10,6 +10,9 @@ from common.logging_config import setup_logging
 logger = logging.getLogger(__name__)
 
 def run_dedup_timestamp():
+    """
+    Pipeline to dedup timestamp, from bronze to silver layer in Delta Lake Minio
+    """
     setup_logging()
     logger.info("Batch jobs from Delta Minio to Minio to dedup timestamp: Starting...")
     logger.info("Loading configuration...")

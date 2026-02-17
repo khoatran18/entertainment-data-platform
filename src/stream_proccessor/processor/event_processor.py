@@ -1,7 +1,7 @@
 import logging
 
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import from_json, col, coalesce
+from pyspark.sql.functions import from_json, col, coalesce, current_timestamp
 
 from stream_proccessor.schema.event_schema import PARTIAL_EVENT_SCHEMA, ID_SCHEMA
 
@@ -12,7 +12,8 @@ def process_event(df: DataFrame) -> DataFrame:
     Full logic processing event
     """
     raw_df = cast_event(df)
-    validated_df = valid_full_schema(raw_df)
+    enriched_df = enrich_event(raw_df)
+    validated_df = valid_full_schema(enriched_df)
 
     return validated_df
 
@@ -42,6 +43,17 @@ def valid_full_schema(df: DataFrame):
                 col("data_type").isNotNull() &
                 col("data_label").isNotNull() &
                 col("timestamp").isNotNull() &
+                col("process_timestamp").isNotNull() &
                 col("id_of_data_type").isNotNull()
             ) \
             .drop("id_info")
+
+def enrich_event(df: DataFrame):
+    """
+    Enrich event with more information: process_timestamp, ...
+    """
+    enriched_df =  df.withColumn("process_timestamp", current_timestamp())
+    return enriched_df.select(
+        "process_timestamp",
+        *[c for c in enriched_df.columns if c != "process_timestamp"]
+    )
