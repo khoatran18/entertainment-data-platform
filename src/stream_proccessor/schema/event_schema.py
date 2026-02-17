@@ -1,9 +1,9 @@
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, TimestampType
 
 PARTIAL_EVENT_SCHEMA = StructType([
-    StructField("data_type", StringType(), False),
-    StructField("data_label", StringType(), False),
-    StructField("timestamp", TimestampType(), False),
+    StructField("data_type", StringType(), True),
+    StructField("data_label", StringType(), True),
+    StructField("timestamp", TimestampType(), True),
 ])
 
 ID_SCHEMA = StructType([
