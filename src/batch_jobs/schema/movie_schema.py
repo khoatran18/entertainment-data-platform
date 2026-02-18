@@ -34,12 +34,15 @@ MOVIE_FULL_SCHEMA = StructType([
                 StructField("name", StringType(), True)
             ])
         ), True),
-        StructField("belongs_to_collection", StructType([
+        StructField("belongs_to_collection", ArrayType([
             StructField("id", LongType(), True),
             StructField("name", StringType(), True),
         ]), True),
-        StructField("origin_country", ArrayType(
-            StringType()
-        ), True)
+        StructField("production_countries", ArrayType(
+            StructType([
+                StructField("iso_3166_1", StringType(), True),
+                StructField("name", StringType(), True)
+            ])
+        ), True),
     ]))
 ])

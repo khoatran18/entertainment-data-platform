@@ -34,8 +34,11 @@ TV_SERIES_FULL_SCHEMA = StructType([
                 StructField("name", StringType(), True)
             ])
         ), True),
-        StructField("origin_country", ArrayType(
-            StringType()
+        StructField("production_countries", ArrayType(
+            StructType([
+                StructField("iso_3166_1", StringType(), True),
+                StructField("name", StringType(), True)
+            ])
         ), True),
         StructField("number_of_seasons", IntegerType(), True),
     ]), True)
