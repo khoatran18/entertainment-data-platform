@@ -1,6 +1,6 @@
 CREATE DATABASE IF NOT EXISTS silver_layer;
 
-CREATE TABLE silver_table.tv_series
+CREATE TABLE IF NOT EXISTS silver_layer.tv_series
 (
     tv_series_id UInt64,
     overview String,
@@ -14,18 +14,18 @@ CREATE TABLE silver_table.tv_series
     genres Nested
     (
         id UInt64,
-        name String,
+        name String
     ),
 
     production_countries
     (
         iso_3166_1 String,
-        name String,
+        name String
     ),
 
     number_of_seasons UInt64,
 
-    batch_version UInt64,
+    batch_version UInt64
 )
 ENGINE = ReplacingMergeTree(batch_version)
 ORDER BY tv_series_id;

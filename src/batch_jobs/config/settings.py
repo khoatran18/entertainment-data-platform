@@ -56,6 +56,8 @@ class ClickhouseTablesSettings(BaseModel):
 class ClickhouseSettings(BaseModel):
     host: str
     port: int
+    username: str
+    password: str
     database: str
     tables: ClickhouseTablesSettings
 

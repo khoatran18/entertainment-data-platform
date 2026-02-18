@@ -25,7 +25,9 @@ storage:
   clickhouse:
     host: "localhost"
     port: 8123
-    database: "silver"
+    username: "default"
+    password: ""
+    database: "silver_layer"
     tables:
       movie: "movies"
       person: "people"

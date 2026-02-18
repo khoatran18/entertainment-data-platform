@@ -48,6 +48,28 @@ services:
       - test-network
     command: server --console-address ":9001" /data
 
+  clickhouse:
+    image: clickhouse/clickhouse-server
+    container_name: clickhouse
+    restart: unless-stopped
+    ports:
+      - 8123:8123
+      - 9002:9000
+    environment:
+      - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1
+    networks:
+      - test-network
+
+  tabix:
+    image: spoonest/clickhouse-tabix-web-client
+    container_name: tabix
+    restart: unless-stopped
+    ports:
+      - 8081:80
+    depends_on:
+      - clickhouse
+    networks:
+      - test-network
 networks:
   test-network:
     driver: bridge

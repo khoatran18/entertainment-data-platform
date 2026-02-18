@@ -1,6 +1,6 @@
 CREATE DATABASE IF NOT EXISTS silver_layer;
 
-CREATE TABLE IF NOT EXISTS silver_table.tv_series_cast
+CREATE TABLE IF NOT EXISTS silver_layer.tv_series_cast
 (
     tv_series_id UInt64,
     cast_id UInt64,
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS silver_table.tv_series_cast
     credit_id String,
     known_for_department LowCardinality(String),
 
-    batch_version UInt64,
+    batch_version UInt64
 )
-ENGINE = ReplacingMergeTree()
+ENGINE = ReplacingMergeTree(batch_version)
 ORDER BY (tv_series_id, cast_id);

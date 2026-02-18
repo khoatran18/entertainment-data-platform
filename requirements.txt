@@ -11,3 +11,4 @@ tqdm
 pydantic
 pyaml
 confluent-kafka
+clickhouse-connect
