@@ -49,6 +49,7 @@ def run_dedup_timestamp():
         logger.info("Reading data from %s with version %d to %d", from_path, int(last_version), current_version)
         delta_minio_reader = DeltaMinioReader(spark, settings)
         from_df = delta_minio_reader.read_table_cdf(target_path= from_path, start_version=int(last_version), end_version=current_version)
+        from_df = from_df.withColumn("batch_version", current_version)
         key_columns = ["data_type", "id_of_data_type"]
         ts_column = "timestamp"
 
