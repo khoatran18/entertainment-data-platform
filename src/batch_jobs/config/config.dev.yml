@@ -36,6 +36,8 @@ storage:
   redis:
     host: "localhost"
     port: 6379
+    keys:
+      dedup_batch_version: "dedup_batch_version"
 
 spark:
   app_name_1: "bronze_to_silver"

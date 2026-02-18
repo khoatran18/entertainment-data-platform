@@ -16,3 +16,6 @@ class DeltaMinioWriter:
 
     def append(self, df: DataFrame, target_path: str):
         return df.write.format("delta").mode("append").save(target_path)
+
+    def write_first_with_cdf(self, df: DataFrame, target_path: str):
+        return df.write.format("delta").mode("overwrite").option("delta.enableChangeDataFeed", "true").save(target_path)

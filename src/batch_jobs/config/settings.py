@@ -62,9 +62,13 @@ class ClickhouseSettings(BaseModel):
     tables: ClickhouseTablesSettings
 
 ##### Redis Setting
+class RedisKeySettings(BaseModel):
+    dedup_batch_version: str
+
 class RedisSettings(BaseModel):
     host: str
     port: int
+    keys: RedisKeySettings
 
 ##### Storage setting
 class StorageSettings(BaseModel):
