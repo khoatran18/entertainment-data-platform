@@ -19,7 +19,9 @@ class DeltaMinioReader:
             self,
             target_path: str,
             start_timestamp: str | None = None,
-            end_timestamp: str | None = None
+            end_timestamp: str | None = None,
+            start_version: int | None = None,
+            end_version: int | None = None
     ):
         reader = self.spark.read.format("delta") \
                         .option("readChangeFeed", "true")
@@ -28,5 +30,9 @@ class DeltaMinioReader:
             reader = reader.option("startingTimestamp", start_timestamp)
         if end_timestamp is not None:
             reader = reader.option("endingTimestamp", end_timestamp)
+        if start_version is not None:
+            reader = reader.option("startingVersion", start_version)
+        if end_version is not None:
+            reader = reader.option("endingVersion", end_version)
 
         return reader.load(target_path)

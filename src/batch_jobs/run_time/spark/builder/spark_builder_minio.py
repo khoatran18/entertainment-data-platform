@@ -2,7 +2,7 @@ from batch_jobs.config.settings import Settings
 from batch_jobs.run_time.spark.builder.spark_base_builder import spark_base_builder
 
 
-def create_spark_minio_clickhouse(
+def create_spark_minio(
         app_name: str,
         settings: Settings
 ):

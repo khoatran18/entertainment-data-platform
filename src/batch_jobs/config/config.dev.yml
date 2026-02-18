@@ -33,6 +33,10 @@ storage:
       person: "people"
       tv_series: "tv_series"
 
+  redis:
+    host: "localhost"
+    port: 6379
+
 spark:
   app_name_1: "bronze_to_silver"
   app_name_2: "silver_to_gold"

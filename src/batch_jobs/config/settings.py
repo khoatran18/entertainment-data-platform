@@ -61,10 +61,16 @@ class ClickhouseSettings(BaseModel):
     database: str
     tables: ClickhouseTablesSettings
 
+##### Redis Setting
+class RedisSettings(BaseModel):
+    host: str
+    port: int
+
 ##### Storage setting
 class StorageSettings(BaseModel):
     delta_lake: DeltaLakeSettings
     clickhouse: ClickhouseSettings
+    redis: RedisSettings
 
 ##### Spark setting
 class SparkSettings(BaseModel):

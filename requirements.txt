@@ -12,3 +12,4 @@ pydantic
 pyaml
 confluent-kafka
 clickhouse-connect
+redis
