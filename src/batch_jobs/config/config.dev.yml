@@ -27,6 +27,7 @@ storage:
     port: 8123
     username: "default"
     password: ""
+    driver: "com.clickhouse.jdbc.ClickHouseDriver"
     database: "silver_layer"
     tables:
       movie: "movies"

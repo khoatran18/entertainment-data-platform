@@ -1,4 +1,4 @@
-from pyspark.sql.types import StructType, StructField, ArrayType, StringType, FloatType, LongType
+from pyspark.sql.types import StructType, StructField, ArrayType, StringType, DoubleType, LongType
 
 MOVIE_FULL_SCHEMA = StructType([
     StructField("movie_id", LongType(), True),
@@ -23,10 +23,10 @@ MOVIE_FULL_SCHEMA = StructType([
         StructField("id", LongType(), True),
         StructField("original_title", StringType(), True),
         StructField("overview", StringType(), True),
-        StructField("popularity", FloatType(), True),
+        StructField("popularity", DoubleType(), True),
         StructField("release_date", StringType(), True),
         StructField("tagline", StringType(), True),
-        StructField("vote_average", FloatType(), True),
+        StructField("vote_average", DoubleType(), True),
         StructField("vote_count", LongType(), True),
         StructField("genres", ArrayType(
             StructType([
@@ -34,10 +34,12 @@ MOVIE_FULL_SCHEMA = StructType([
                 StructField("name", StringType(), True)
             ])
         ), True),
-        StructField("belongs_to_collection", ArrayType([
-            StructField("id", LongType(), True),
-            StructField("name", StringType(), True),
-        ]), True),
+        StructField("belongs_to_collection", ArrayType(
+            StructType([
+                StructField("id", LongType(), True),
+                StructField("name", StringType(), True),
+            ])
+        ), True),
         StructField("production_countries", ArrayType(
             StructType([
                 StructField("iso_3166_1", StringType(), True),

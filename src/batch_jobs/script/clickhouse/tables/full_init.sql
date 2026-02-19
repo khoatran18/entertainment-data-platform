@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS silver_layer.movie
 ENGINE = ReplacingMergeTree(batch_version)
 ORDER BY movie_id;
 
-CREATE TABLE IF NOT EXISTS silver_layer.movie_cast_table
+CREATE TABLE IF NOT EXISTS silver_layer.movie_cast
 (
     movie_id UInt64,
     cast_id UInt64,

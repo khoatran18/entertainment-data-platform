@@ -5,11 +5,15 @@ from pyspark.sql.column import Column
 from pyspark.sql import SparkSession, DataFrame, Window
 from pyspark.sql.functions import col, row_number
 
+from batch_jobs.tranforms.delta_delta.parse_schema import parse_schema
+
 logger = logging.getLogger(__name__)
 
 def upsert_latest(
         spark: SparkSession,
         from_df: DataFrame,
+        raw_column: str,
+        data_schema,
         to_folder: str,
         key_columns: list[str],
         ts_column: str
@@ -17,20 +21,25 @@ def upsert_latest(
     """
     Upsert latest batch to Delta Lake, from Bronze to Silver Layer
     """
-    if not DeltaTable.isDeltaTable(spark, to_folder):
-        (
-            from_df.limit(0)
-                .write
-                .format("delta")
-                .mode("overwrite")
-                .save(to_folder)
-        )
 
     logger.info("Start dedup batch in snapshot")
     logger.info("Size before dedup: %s", from_df.count())
     clean_df = dedup_latest_batch(from_df, key_columns, ts_column)
     logger.info("Dedup batch in snapshot successfully completed")
     logger.info("Size after dedup: %s", clean_df.count())
+
+    logger.info("Start parse raw data to schema")
+    parsed_df = parse_schema(df=clean_df, col=raw_column, schema=data_schema)
+
+    # Init table
+    if not DeltaTable.isDeltaTable(spark, to_folder):
+        (
+            parsed_df.limit(0)
+                .write
+                .format("delta")
+                .mode("overwrite")
+                .save(to_folder)
+        )
 
     logger.info("Start upsert latest batch to delta table: %s", to_folder)
     target_delta_table = DeltaTable.forPath(spark, to_folder)
@@ -42,7 +51,7 @@ def upsert_latest(
     (
         target_delta_table.alias("t") \
             .merge(
-                source=clean_df.alias("s"),
+                source=parsed_df.alias("s"),
                 condition=merge_condition,
             ) \
             .whenMatchedUpdateAll(condition=update_condition) \

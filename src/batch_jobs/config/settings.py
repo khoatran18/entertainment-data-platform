@@ -59,6 +59,7 @@ class ClickhouseSettings(BaseModel):
     username: str
     password: str
     database: str
+    driver: str
     tables: ClickhouseTablesSettings
 
 ##### Redis Setting

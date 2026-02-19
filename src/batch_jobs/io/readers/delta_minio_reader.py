@@ -1,19 +1,34 @@
+from functools import reduce
+
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import col
 
-from batch_jobs.config.settings import Settings
-
+from batch_jobs.config.settings import Settings, load_settings
 
 class DeltaMinioReader:
     """
     Create Delta table reader from Minio by Spark
     """
 
-    def __init__(self, spark: SparkSession, settings: Settings):
+    def __init__(self, spark: SparkSession):
         self.spark = spark
-        self.settings = settings
+        self.settings = load_settings()
 
     def read_table(self, target_path: str):
         return self.spark.read.format("delta").load(target_path)
+
+    def  read_table_with_filters(self, target_path: str, filters: dict):
+        df = self.read_table(target_path)
+        if not filters:
+            return df
+
+        target_df = reduce(
+            lambda temp_df, item: temp_df.filter(col(item[0]) == item[1]),
+            filters.items(),
+            df
+        )
+
+        return target_df
 
     def read_table_cdf(
             self,

@@ -1,4 +1,4 @@
-from pyspark.sql.types import StructType, StructField, ArrayType, StringType, FloatType, LongType, IntegerType
+from pyspark.sql.types import StructType, StructField, ArrayType, StringType, DoubleType, LongType, IntegerType
 
 TV_SERIES_FULL_SCHEMA = StructType([
     StructField("tv_series_id", LongType(), True),
@@ -22,10 +22,10 @@ TV_SERIES_FULL_SCHEMA = StructType([
     StructField("tv_series_detail", StructType([
         StructField("id", LongType(), True),
         StructField("overview", StringType(), True),
-        StructField("popularity", FloatType(), True),
+        StructField("popularity", DoubleType(), True),
         StructField("first_air_date", StringType(), True),
         StructField("tagline", StringType(), True),
-        StructField("vote_average", FloatType(), True),
+        StructField("vote_average", DoubleType(), True),
         StructField("vote_count", LongType(), True),
         StructField("status", StringType(), True),
         StructField("genres", ArrayType(
