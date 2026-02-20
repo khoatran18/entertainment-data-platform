@@ -2,12 +2,9 @@ from pyspark.sql import DataFrame, Column
 from pyspark.sql.functions import col, to_date, explode, to_json, regexp_replace
 from pyspark.sql.types import DataType, LongType, StringType, DoubleType, IntegerType, BooleanType
 
-
-def to_ch_array(column: Column):
-    return regexp_replace(to_json(column), '"', "'")
-
 def to_ch_json(column: Column):
-    return regexp_replace(to_json(column), "'", '"')
+    return to_json(column)
+    # return regexp_replace(to_json(column), "'", '"')
 
 def prepare_table_movie(
         df: DataFrame
@@ -21,14 +18,9 @@ def prepare_table_movie(
         col("parsed_raw_df.movie_detail.vote_average").cast(DoubleType()).alias("vote_average"),
         col("parsed_raw_df.movie_detail.vote_count").cast(LongType()).alias("vote_count"),
 
-        to_ch_array(col("parsed_raw_df.movie_detail.genres.id")).alias("genres.id"),
-        to_ch_array(col("parsed_raw_df.movie_detail.genres.name")).alias("genres.name"),
-
-        to_ch_array(col("parsed_raw_df.movie_detail.belongs_to_collection.id")).alias("belongs_to_collection.id"),
-        to_ch_array(col("parsed_raw_df.movie_detail.belongs_to_collection.name")).alias("belongs_to_collection.name"),
-
-        to_ch_array(col("parsed_raw_df.movie_detail.production_countries.iso_3166_1")).alias("production_countries.iso_3166_1"),
-        to_ch_array(col("parsed_raw_df.movie_detail.production_countries.name")).alias("production_countries.name"),
+        col("parsed_raw_df.movie_detail.genres").alias("genres"),
+        col("parsed_raw_df.movie_detail.belongs_to_collection").alias("belongs_to_collection"),
+        col("parsed_raw_df.movie_detail.production_countries").alias("production_countries"),
 
         col("vector_info_hash").cast(LongType()).alias("vector_info_hash"),
         col("casts_total_hash").cast(LongType()).alias("casts_total_hash"),
@@ -85,7 +77,7 @@ def prepare_table_person(
         col("parsed_raw_df.person_id").cast(LongType()).alias("person_id"),
         col("parsed_raw_df.person_detail.name").cast(StringType()).alias("name"),
         col("parsed_raw_df.person_detail.gender").cast(IntegerType()).alias("gender"),
-        to_ch_array(col("parsed_raw_df.person_detail.also_known_as")).alias("also_known_as"),
+        col("parsed_raw_df.person_detail.also_known_as").alias("also_known_as"),
         col("parsed_raw_df.person_detail.biography").cast(StringType()).alias("biography"),
 
         to_date(col("parsed_raw_df.person_detail.birthday").cast(StringType())).alias("birthday"),
@@ -117,11 +109,8 @@ def prepare_table_tv_series(
         col("parsed_raw_df.tv_series_detail.vote_count").cast(LongType()).alias("vote_count"),
         col("parsed_raw_df.tv_series_detail.status").cast(StringType()).alias("status"),
 
-        to_ch_array(col("parsed_raw_df.tv_series_detail.genres.id")).alias("genres.id"),
-        to_ch_array(col("parsed_raw_df.tv_series_detail.genres.name")).alias("genres.name"),
-
-        to_ch_array(col("parsed_raw_df.tv_series_detail.production_countries.iso_3166_1")).alias("production_countries.iso_3166_1"),
-        to_ch_array(col("parsed_raw_df.tv_series_detail.production_countries.name")).alias("production_countries.name"),
+        col("parsed_raw_df.tv_series_detail.genres").alias("genres"),
+        col("parsed_raw_df.tv_series_detail.production_countries").alias("production_countries"),
 
         col("parsed_raw_df.tv_series_detail.number_of_seasons").cast(LongType()).alias("number_of_seasons"),
 
