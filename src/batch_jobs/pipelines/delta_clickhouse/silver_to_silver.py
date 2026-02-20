@@ -4,7 +4,9 @@ import sys
 from batch_jobs.config.settings import load_settings
 from batch_jobs.io.readers.delta_minio_reader import DeltaMinioReader
 from batch_jobs.io.writers.clickhouse_jdbc_writer import ClickHouseJdbcWriter
+from batch_jobs.io.writers.clickhouse_native_writer import ClickHouseNativeWriter
 from batch_jobs.run_time.clickhouse.clickhouse_init import init_clickhouse
+from batch_jobs.run_time.clickhouse.prepare_clickhouse_native import prepare_clickhouse_native
 from batch_jobs.run_time.redis.redis_client import RedisClient
 from batch_jobs.run_time.spark.builder.spark_builder_minio_clickhouse import create_spark_minio_clickhouse
 from batch_jobs.tranforms.delta_clickhouse.prepare_clickhouse_table import prepare_table_movie, prepare_table_person, \
@@ -33,8 +35,10 @@ def run_write_to_clickhouse():
 
     builder = create_spark_minio_clickhouse(app_name=settings.spark.app_name_2, settings=settings)
     spark = builder.getOrCreate()
+    spark = prepare_clickhouse_native(spark)
     delta_minio_reader = DeltaMinioReader(spark)
-    clickhouse_writer = ClickHouseJdbcWriter(spark)
+    # clickhouse_writer = ClickHouseJdbcWriter(spark)
+    clickhouse_writer = ClickHouseNativeWriter(spark)
 
     transform_map = {
         "movie": [
@@ -84,7 +88,7 @@ def run_write_to_clickhouse():
             table_df = transform_func(from_df)
 
             logger.info(f"Processing transform for Clickhouse table: {table_name}")
-            clickhouse_writer.write_table(df=table_df, table_name=table_name, mode="append")
+            clickhouse_writer.write_table(df=table_df, table_name=table_name)
             logger.info(f"Finish processing transform for Clickhouse table: {table_name}")
         logger.info(f"Finish processing data type: {data_type}")
 

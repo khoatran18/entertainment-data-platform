@@ -22,6 +22,7 @@ def create_spark_minio_clickhouse(
                     "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1",
                     "io.delta:delta-spark_2.12:3.2.0",
                     "org.apache.hadoop:hadoop-aws:3.3.4",
+                    "com.clickhouse.spark:clickhouse-spark-runtime-3.5_2.12:0.9.0",
                     "com.clickhouse:clickhouse-jdbc-all:0.9.6",
                     "org.jspecify:jspecify:1.0.0"
                 ])
