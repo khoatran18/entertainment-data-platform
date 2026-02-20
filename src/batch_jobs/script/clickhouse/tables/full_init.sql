@@ -35,13 +35,13 @@ CREATE TABLE IF NOT EXISTS silver_layer.movie
 
     vector_info_hash_diff Bool,
 
-    casts_diff Nested
+    casts_diff JSON
     (
         added Array(UInt64),
         removed Array(UInt64)
     ),
 
-    crews_diff Nested
+    crews_diff JSON
     (
         added Array(UInt64),
         removed Array(UInt64)
@@ -128,13 +128,13 @@ CREATE TABLE IF NOT EXISTS silver_layer.tv_series
 
     vector_info_hash_diff Bool,
 
-    casts_diff Nested
+    casts_diff JSON
     (
         added Array(UInt64),
         removed Array(UInt64)
     ),
 
-    crews_diff Nested
+    crews_diff JSON
     (
         added Array(UInt64),
         removed Array(UInt64)

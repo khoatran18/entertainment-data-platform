@@ -6,6 +6,9 @@ from pyspark.sql.types import DataType, LongType, StringType, DoubleType, Intege
 def to_ch_array(column: Column):
     return regexp_replace(to_json(column), '"', "'")
 
+def to_ch_json(column: Column):
+    return regexp_replace(to_json(column), "'", '"')
+
 def prepare_table_movie(
         df: DataFrame
 ):
@@ -33,10 +36,8 @@ def prepare_table_movie(
 
         col("vector_info_hash_diff").cast(BooleanType()).alias("vector_info_hash_diff"),
 
-        col("casts_diff.added").alias("casts_diff.added"),
-        col("casts_diff.removed").alias("casts_diff.removed"),
-        col("crews_diff.added").alias("crews_diff.added"),
-        col("crews_diff.removed").alias("crews_diff.removed"),
+        to_ch_json(col("casts_diff")).alias("casts_diff"),
+        to_ch_json(col("crews_diff")).alias("crews_diff"),
 
         col("batch_version").cast(LongType()).alias("batch_version"),
     )
@@ -130,10 +131,8 @@ def prepare_table_tv_series(
 
         col("vector_info_hash_diff").cast(BooleanType()).alias("vector_info_hash_diff"),
 
-        col("casts_diff.added").alias("casts_diff.added"),
-        col("casts_diff.removed").alias("casts_diff.removed"),
-        col("crews_diff.added").alias("crews_diff.added"),
-        col("crews_diff.removed").alias("crews_diff.removed"),
+        to_ch_json(col("casts_diff")).alias("casts_diff"),
+        to_ch_json(col("crews_diff")).alias("crews_diff"),
 
         col("batch_version").cast(LongType()).alias("batch_version")
     )
