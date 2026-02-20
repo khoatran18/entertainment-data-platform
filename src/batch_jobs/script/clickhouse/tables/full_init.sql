@@ -29,6 +29,24 @@ CREATE TABLE IF NOT EXISTS silver_layer.movie
         name LowCardinality(String)
     ),
 
+    vector_info_hash Int64,
+    casts_total_hash Int64,
+    crews_total_hash Int64,
+
+    vector_info_hash_diff Bool,
+
+    casts_diff Nested
+    (
+        added Array(UInt64),
+        removed Array(UInt64)
+    ),
+
+    crews_diff Nested
+    (
+        added Array(UInt64),
+        removed Array(UInt64)
+    ),
+
     batch_version UInt64
 )
 ENGINE = ReplacingMergeTree(batch_version)
@@ -103,6 +121,24 @@ CREATE TABLE IF NOT EXISTS silver_layer.tv_series
     ),
 
     number_of_seasons UInt64,
+
+        vector_info_hash Int64,
+    casts_total_hash Int64,
+    crews_total_hash Int64,
+
+    vector_info_hash_diff Bool,
+
+    casts_diff Nested
+    (
+        added Array(UInt64),
+        removed Array(UInt64)
+    ),
+
+    crews_diff Nested
+    (
+        added Array(UInt64),
+        removed Array(UInt64)
+    ),
 
     batch_version UInt64
 )

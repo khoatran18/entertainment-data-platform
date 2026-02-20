@@ -1,6 +1,6 @@
 from pyspark.sql import DataFrame, Column
 from pyspark.sql.functions import col, to_date, explode, to_json, regexp_replace
-from pyspark.sql.types import DataType, LongType, StringType, DoubleType, IntegerType
+from pyspark.sql.types import DataType, LongType, StringType, DoubleType, IntegerType, BooleanType
 
 
 def to_ch_array(column: Column):
@@ -26,6 +26,17 @@ def prepare_table_movie(
 
         to_ch_array(col("parsed_raw_df.movie_detail.production_countries.iso_3166_1")).alias("production_countries.iso_3166_1"),
         to_ch_array(col("parsed_raw_df.movie_detail.production_countries.name")).alias("production_countries.name"),
+
+        col("vector_info_hash").cast(LongType()).alias("vector_info_hash"),
+        col("casts_total_hash").cast(LongType()).alias("casts_total_hash"),
+        col("crews_total_hash").cast(LongType()).alias("crews_total_hash"),
+
+        col("vector_info_hash_diff").cast(BooleanType()).alias("vector_info_hash_diff"),
+
+        col("casts_diff.added").alias("casts_diff.added"),
+        col("casts_diff.removed").alias("casts_diff.removed"),
+        col("crews_diff.added").alias("crews_diff.added"),
+        col("crews_diff.removed").alias("crews_diff.removed"),
 
         col("batch_version").cast(LongType()).alias("batch_version"),
     )
@@ -112,6 +123,17 @@ def prepare_table_tv_series(
         to_ch_array(col("parsed_raw_df.tv_series_detail.production_countries.name")).alias("production_countries.name"),
 
         col("parsed_raw_df.tv_series_detail.number_of_seasons").cast(LongType()).alias("number_of_seasons"),
+
+        col("vector_info_hash").cast(LongType()).alias("vector_info_hash"),
+        col("casts_total_hash").cast(LongType()).alias("casts_total_hash"),
+        col("crews_total_hash").cast(LongType()).alias("crews_total_hash"),
+
+        col("vector_info_hash_diff").cast(BooleanType()).alias("vector_info_hash_diff"),
+
+        col("casts_diff.added").alias("casts_diff.added"),
+        col("casts_diff.removed").alias("casts_diff.removed"),
+        col("crews_diff.added").alias("crews_diff.added"),
+        col("crews_diff.removed").alias("crews_diff.removed"),
 
         col("batch_version").cast(LongType()).alias("batch_version")
     )

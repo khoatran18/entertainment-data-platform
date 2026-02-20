@@ -65,7 +65,7 @@ def run_dedup_timestamp():
         ts_column = "timestamp"
 
         logger.info("Upserting data from %s to %s", from_path, to_path)
-        upsert_latest(spark=spark, from_df=from_df, raw_column="raw_df", data_schema=data_schema, to_folder=to_path, key_columns=key_columns, ts_column=ts_column)
+        upsert_latest(spark=spark, from_df=from_df, data_type=data_type, raw_column="raw_df", data_schema=data_schema, to_folder=to_path, key_columns=key_columns, ts_column=ts_column)
         redis_client.set(version_key, current_version)
 
 if __name__ == "__main__":
