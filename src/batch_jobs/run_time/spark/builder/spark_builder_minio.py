@@ -22,6 +22,6 @@ def create_spark_minio(
             .config("spark.hadoop.fs.s3a.endpoint", settings.storage.delta_lake.minio_endpoint) \
             .config("spark.hadoop.fs.s3a.access.key", settings.storage.delta_lake.minio_access_key) \
             .config("spark.hadoop.fs.s3a.secret.key", settings.storage.delta_lake.minio_secret_key) \
-            .config("spark.hadoop.fs.s3a.path.style.access", "true") \
+            .config("spark.hadoop.fs.s3a.path.style.access", "true")
 
     return builder

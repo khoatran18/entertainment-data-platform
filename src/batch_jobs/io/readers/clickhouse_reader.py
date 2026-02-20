@@ -1,5 +1,6 @@
 from airflow.models import DagBag
 from pyspark.sql import SparkSession, DataFrame
+from pyspark.sql.functions import col
 
 from batch_jobs.config.settings import load_settings, Settings
 
@@ -22,13 +23,13 @@ class ClickHouseReader:
         self.url = f"jdbc:ch://{self.host}:{self.port}/{self.database}"
 
     def read_table(self, query: str):
-        df = self.spark.read \
-                .format("jdbc") \
-                .option("driver", self.driver) \
-                .option("url", self.url) \
-                .option("user", self.username) \
-                .option("password", self.password) \
-                .option("query", query) \
-                .load()
+        df = self.spark.sql(query)
+        return df
+
+    def read_table_with_filters(self, df: DataFrame, table_name: str, filters: list[dict]):
+        df = self.spark.table(f"clickhouse.{self.database}.{table_name}")
+        for f in filters:
+            df = df.filter(col(f["column"]) == f["value"])
+
         return df
 
