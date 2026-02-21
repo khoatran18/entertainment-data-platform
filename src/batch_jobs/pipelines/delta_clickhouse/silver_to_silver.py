@@ -59,7 +59,7 @@ def run_write_to_clickhouse():
     logger.info("Starting processing...")
     for data_type, target_folder in settings.storage.delta_lake.target_name_folder:
         logger.info(f"Processing data type: {data_type}")
-        # Get input path and table list
+        # Get input paths and table list
         from_path, _ = get_valid_invalid_path(settings.storage.delta_lake.tables.silver_layer, target_folder)
         if data_type not in transform_map:
             logger.warning(f"Data type {data_type} not found in transform_map. Skipping...")

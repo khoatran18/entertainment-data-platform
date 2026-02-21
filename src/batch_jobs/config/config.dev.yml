@@ -41,6 +41,15 @@ storage:
     keys:
       dedup_batch_version: "dedup_batch_version"
 
+  neo4j:
+    url: url,
+    username: username,
+    password: password
+    database: database
+    instance_id: instance_id
+    instance_name: instance_name
+    batch_size: 10
+
 spark:
   app_name_1: "bronze_to_silver"
   app_name_2: "silver_to_gold"

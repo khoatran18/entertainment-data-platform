@@ -29,10 +29,14 @@ def create_spark_clickhouse_neo4j_pinecone(
         .config("spark.hadoop.fs.s3a.endpoint", settings.storage.delta_lake.minio_endpoint) \
         .config("spark.hadoop.fs.s3a.access.key", settings.storage.delta_lake.minio_access_key) \
         .config("spark.hadoop.fs.s3a.secret.key", settings.storage.delta_lake.minio_secret_key) \
-        .config("spark.hadoop.fs.s3a.path.style.access", "true")
+        .config("spark.hadoop.fs.s3a.path.style.access", "true") \
+        .config("neo4j.url", settings.storage.neo4j.url) \
+        .config("neo4j.authentication.basic.username", settings.storage.neo4j.username) \
+        .config("neo4j.authentication.basic.password", settings.storage.neo4j.password) \
+        .config("neo4j.database", settings.storage.neo4j.database)
 
     return builder
 
 
 if __name__ == "__main__":
-    spark = create_spark_clickhouse_neo4j_zilliz("test", load_settings()).getOrCreate()
+    spark = create_spark_clickhouse_neo4j_pinecone("test", load_settings()).getOrCreate()
