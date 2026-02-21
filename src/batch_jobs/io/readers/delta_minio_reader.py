@@ -15,9 +15,15 @@ class DeltaMinioReader:
         self.settings = load_settings()
 
     def read_table(self, target_path: str):
+        """
+        Read table from Delta
+        """
         return self.spark.read.format("delta").load(target_path)
 
     def  read_table_with_filters(self, target_path: str, filters: dict):
+        """
+        Read table from Delta with filters
+        """
         df = self.read_table(target_path)
         if not filters:
             return df
@@ -38,6 +44,9 @@ class DeltaMinioReader:
             start_version: int | None = None,
             end_version: int | None = None
     ):
+        """
+        Read table from Delta with Change Data Feed
+        """
         reader = self.spark.read.format("delta") \
                         .option("readChangeFeed", "true")
 

@@ -23,6 +23,12 @@ class Neo4jWriter:
             label: str,
             keys: list[str]
     ):
+        """
+        Write Node to Neo4j with strict constraint
+        :param df: DataFrame to write
+        :param label: Label of Node
+        :param keys: Keys of Node
+        """
         logger.info("Start writing Node (strict mode) to Neo4j with label: %s", label)
         try:
             format_label = f":{label}"
@@ -46,6 +52,12 @@ class Neo4jWriter:
             label: str,
             keys: list[str],
     ):
+        """
+        Write Node to Neo4j with normal constraint
+        :param df: DataFrame to write
+        :param label: Label of Node
+        :param keys: Keys of Node
+        """
         logger.info("Start writing Node (normal mode) to Neo4j with label: %s", label)
         try:
             format_label = f":{label}"
@@ -79,7 +91,22 @@ class Neo4jWriter:
             partition_num: int = 1,
             action_col: str = "added"
     ):
-
+        """
+        Write Relationship to Neo4j
+        :param df: DataFrame to write
+        :param repartition_cols: Repartition columns
+        :param relationship: Relationship name
+        :param source_label: Label of source node
+        :param source_keys: Keys of source node
+        :param source_properties: Properties of source node
+        :param target_label: Label of target node
+        :param target_keys: Keys of target node
+        :param target_properties: Properties of target node
+        :param relationship_properties: Relationship properties
+        :param partition_num: Partition number
+        :param action_col: Action column name in diff column (added/removed)
+        :return:
+        """
         is_deleted_action = True if action_col == "removed" else False
         logger.info("Start writing Relationship (%s action) to Neo4j with relationship: %s", action_col, relationship)
         try:

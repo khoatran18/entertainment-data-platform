@@ -11,23 +11,18 @@ CREATE TABLE IF NOT EXISTS silver_layer.movie
     vote_average Float64,
     vote_count UInt64,
 
-    genres Nested
-    (
-        id UInt64,
-        name LowCardinality(String)
-    ),
+    genres Array(Tuple(id UInt64, name String)),
+    belongs_to_collection Array(Tuple(id UInt64, name String)),
+    production_countries Array(Tuple(iso_3166_1 String, name String)),
 
-    belongs_to_collection Nested
-    (
-        id UInt64,
-        name LowCardinality(String)
-    ),
+    vector_info_hash Int64,
+    casts_total_hash Int64,
+    crews_total_hash Int64,
 
-    production_countries Nested
-    (
-        iso_3166_1 String,
-        name LowCardinality(String)
-    ),
+    vector_info_hash_diff Bool,
+
+    casts_diff String,
+    crews_diff String,
 
     batch_version UInt64
 )

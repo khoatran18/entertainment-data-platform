@@ -107,6 +107,7 @@ def load_settings() -> Settings:
     Get APP_ENV to get config file and load
     """
 
+    # Get env file
     ENV_PATH = Path(__file__).parent / ".env"
     if ENV_PATH.exists():
         logger.info("Load env file from %s", ENV_PATH)
@@ -114,6 +115,7 @@ def load_settings() -> Settings:
     else:
         logger.warning("No env file found at %s", ENV_PATH)
 
+    # Get config file
     env = os.getenv("APP_ENV", "dev")
     config_path = BASE_DIR / f"config.{env}.yml"
 
@@ -124,9 +126,11 @@ def load_settings() -> Settings:
         logger.error("Config file not found: %s", config_path)
         raise  FileNotFoundError(f"Config file not found: {config_path}")
 
+    # Load config
     with open(config_path) as f:
         cfg = yaml.safe_load(f)
 
+    # Load env to config
     cfg = load_env(cfg)
 
     logger.info("Load config successfully!")
@@ -137,12 +141,15 @@ def load_env(cfg):
     """
     Load .env to config
     """
+
+    # Env NEO4J_URI
     if os.getenv("NEO4J_URI"):
         cfg["storage"]["neo4j"]["url"] = os.getenv("NEO4J_URI")
         logger.info("Set NEO4J_URI to config")
     else:
         logger.warning("NEO4J_URI not found in env, use default value")
 
+    # Env NEO4J_USERNAME and NEO4J_PASSWORD
     if os.getenv("NEO4J_USERNAME"):
         cfg["storage"]["neo4j"]["username"] = os.getenv("NEO4J_USERNAME")
         logger.info("Set NEO4J_USERNAME to config")
@@ -155,12 +162,14 @@ def load_env(cfg):
     else:
         logger.warning("NEO4J_PASSWORD not found in env, use default value")
 
+    # Env NEO4J_DATABASE
     if os.getenv("NEO4J_DATABASE"):
         cfg["storage"]["neo4j"]["database"] = os.getenv("NEO4J_DATABASE")
         logger.info("Set NEO4J_DATABASE to config")
     else:
         logger.warning("NEO4J_DATABASE not found in env, use default value")
 
+    # Env AURA_INSTANCEID and AURA_INSTANCENAME
     if os.getenv("AURA_INSTANCEID"):
         cfg["storage"]["neo4j"]["instance_id"] = os.getenv("AURA_INSTANCEID")
         logger.info("Set AURA_INSTANCEID to config")

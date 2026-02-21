@@ -9,6 +9,9 @@ def to_ch_json(column: Column):
 def prepare_table_movie(
         df: DataFrame
 ):
+    """
+    Convert DataFrame movie to ClickHouse table movie format
+    """
     table_df = df.select(
         col("parsed_raw_df.movie_id").cast(LongType()).alias("movie_id"),
         col("parsed_raw_df.movie_detail.original_title").cast(StringType()).alias("original_title"),
@@ -39,6 +42,9 @@ def prepare_table_movie(
 def prepare_table_movie_cast(
         df: DataFrame
 ):
+    """
+    Convert DataFrame movie to ClickHouse table movie_cast format
+    """
     exploded_df = df.withColumn("cast", explode(col("parsed_raw_df.casts_info")))
 
     table_df = exploded_df.select(
@@ -57,6 +63,9 @@ def prepare_table_movie_cast(
 def prepare_table_movie_crew(
         df: DataFrame
 ):
+    """
+    Convert DataFrame movie to ClickHouse table movie_crew format
+    """
     exploded_df = df.withColumn("crew", explode(col("parsed_raw_df.crews_info")))
 
     table_df = exploded_df.select(
@@ -73,6 +82,9 @@ def prepare_table_movie_crew(
 def prepare_table_person(
         df: DataFrame
 ):
+    """
+    Convert DataFrame person to ClickHouse table person format
+    """
     table_df = df.select(
         col("parsed_raw_df.person_id").cast(LongType()).alias("person_id"),
         col("parsed_raw_df.person_detail.name").cast(StringType()).alias("name"),
@@ -96,6 +108,9 @@ def prepare_table_person(
 def prepare_table_tv_series(
         df: DataFrame
 ):
+    """
+    Convert DataFrame tv_series to ClickHouse table tv_series format
+    """
     table_df = df.select(
         col("parsed_raw_df.tv_series_id").cast(LongType()).alias("tv_series_id"),
 
@@ -132,8 +147,11 @@ def prepare_table_tv_series(
 def prepare_table_tv_series_cast(
         df: DataFrame
 ) -> DataFrame:
-    exploded_df = df.withColumn("cast", explode(col("parsed_raw_df.casts_info")))
+    """
+    Convert DataFrame tv_series to ClickHouse table tv_series_cast format
+    """
 
+    exploded_df = df.withColumn("cast", explode(col("parsed_raw_df.casts_info")))
     table_df = exploded_df.select(
         col("parsed_raw_df.tv_series_id").cast(LongType()).alias("tv_series_id"),
 
@@ -152,8 +170,11 @@ def prepare_table_tv_series_cast(
 def prepare_table_tv_series_crew(
         df: DataFrame
 ) -> DataFrame:
-    exploded_df = df.withColumn("crew", explode(col("parsed_raw_df.crews_info")))
+    """
+    Convert DataFrame tv_series to ClickHouse table tv_series_crew format
+    """
 
+    exploded_df = df.withColumn("crew", explode(col("parsed_raw_df.crews_info")))
     table_df = exploded_df.select(
         col("parsed_raw_df.tv_series_id").cast(LongType()).alias("tv_series_id"),
 

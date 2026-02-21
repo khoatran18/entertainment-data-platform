@@ -12,4 +12,4 @@ CREATE TABLE IF NOT EXISTS silver_layer.movie_cast
     batch_version UInt64
 )
 ENGINE = ReplacingMergeTree(batch_version)
-ORDER BY (movie_id, cast_id);
+ORDER BY (movie_id, person_id);

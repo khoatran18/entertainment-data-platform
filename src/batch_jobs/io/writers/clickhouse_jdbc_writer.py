@@ -23,6 +23,9 @@ class ClickHouseJdbcWriter:
         self.url = f"jdbc:ch://{self.host}:{self.port}/{self.database}"
 
     def write_table(self, df: DataFrame, table_name: str, mode: str = "append"):
+        """
+        Write table to Clickhouse
+        """
         logger.info("Start writing to Clickhouse table: %s.%s", self.database, table_name)
         try:
             df.write \

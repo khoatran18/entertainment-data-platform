@@ -7,7 +7,7 @@ def create_spark_clickhouse_neo4j_pinecone(
         settings: Settings
 , base_builder=None):
     """
-    Spark builder with all config to interact with Delta Lake and Clickhouse
+    Spark builder with all config to interact with Clickhouse, Neo4j and Pinecone
     """
     base_builder = spark_base_builder(app_name)
 

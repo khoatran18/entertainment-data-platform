@@ -7,7 +7,7 @@ def create_spark_minio(
         settings: Settings
 ):
     """
-    Spark builder with all config to interact with Delta Lake and Clickhouse
+    Spark builder with all config to interact with Delta Lake
     """
     base_builder = spark_base_builder(app_name)
 

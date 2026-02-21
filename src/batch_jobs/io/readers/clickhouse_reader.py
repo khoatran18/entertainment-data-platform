@@ -23,10 +23,16 @@ class ClickHouseReader:
         self.url = f"jdbc:ch://{self.host}:{self.port}/{self.database}"
 
     def read_table(self, query: str):
+        """
+        Read table from Clickhouse with SQL query
+        """
         df = self.spark.sql(query)
         return df
 
     def read_table_with_filters(self, table_name: str, filters: list[dict]):
+        """
+        Read table from Clickhouse with filters
+        """
         df = self.spark.table(f"clickhouse.{self.database}.{table_name}")
         for filter_dict in filters:
             for column_name, value in filter_dict.items():

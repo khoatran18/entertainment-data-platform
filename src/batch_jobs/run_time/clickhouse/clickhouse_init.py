@@ -9,6 +9,9 @@ from common.logging_config import setup_logging
 logger = logging.getLogger(__name__)
 
 def init_clickhouse():
+    """
+    Init Clickhouse with creating required tables
+    """
 
     setup_logging()
     logger.info("Start init Clickhouse Table...")

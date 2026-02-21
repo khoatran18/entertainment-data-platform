@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS silver_layer.movie_crew
     job String,
     known_for_department LowCardinality(String),
 
-    batch_version UInt64,
+    batch_version UInt64
 )
 ENGINE = ReplacingMergeTree(batch_version)
 ORDER BY (movie_id, person_id);

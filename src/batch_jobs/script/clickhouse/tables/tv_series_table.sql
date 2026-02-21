@@ -11,19 +11,19 @@ CREATE TABLE IF NOT EXISTS silver_layer.tv_series
     vote_count UInt64,
     status String,
 
-    genres Nested
-    (
-        id UInt64,
-        name String
-    ),
-
-    production_countries
-    (
-        iso_3166_1 String,
-        name String
-    ),
+    genres Array(Tuple(id UInt64, name String)),
+    production_countries Array(Tuple(iso_3166_1 String, name String)),
 
     number_of_seasons UInt64,
+
+    vector_info_hash Int64,
+    casts_total_hash Int64,
+    crews_total_hash Int64,
+
+    vector_info_hash_diff Bool,
+
+    casts_diff String,
+    crews_diff String,
 
     batch_version UInt64
 )

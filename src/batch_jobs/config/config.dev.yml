@@ -34,8 +34,6 @@ storage:
       movie: "movies"
       person: "people"
       tv_series: "tv_series"
-    tables_for_neo4j:
-
 
   redis:
     host: "localhost"

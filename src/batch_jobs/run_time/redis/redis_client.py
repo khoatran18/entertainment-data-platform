@@ -21,10 +21,16 @@ class RedisClient:
         logger.info("Redis client initialized")
 
     def set(self, key, value):
+        """
+        Set key-value pair to Redis
+        """
         logger.info(f"Set key {key} with value {value}")
         self.client.set(name=key, value=value)
 
     def get(self, key):
+        """
+        Get value by key from Redis
+        """
         value = self.client.get(key)
         logger.info(f"Get key {key} with value {value}")
         return value

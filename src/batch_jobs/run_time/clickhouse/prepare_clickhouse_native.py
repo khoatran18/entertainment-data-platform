@@ -6,6 +6,9 @@ from batch_jobs.config.settings import load_settings
 def prepare_clickhouse_native(
         spark: SparkSession
 ):
+    """
+    Prepare Spark to interact with Clickhouse Native Driver
+    """
     settings = load_settings()
     spark.conf.set("spark.sql.catalog.clickhouse", settings.storage.clickhouse.native_driver)
     spark.conf.set("spark.sql.catalog.clickhouse.host", settings.storage.clickhouse.host)
