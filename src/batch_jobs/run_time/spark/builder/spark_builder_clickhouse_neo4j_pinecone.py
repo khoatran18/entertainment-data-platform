@@ -22,8 +22,6 @@ def create_spark_clickhouse_neo4j_pinecone(
     builder = base_builder.master("local[*]") \
         .config("spark.driver.bindAddress", "127.0.0.1") \
         .config("spark.driver.host", "127.0.0.1") \
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
-        .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
         .config("spark.jars.packages",",".join(packages)) \
         .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
         .config("spark.hadoop.fs.s3a.endpoint", settings.storage.delta_lake.minio_endpoint) \

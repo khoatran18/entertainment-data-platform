@@ -26,10 +26,11 @@ class ClickHouseReader:
         df = self.spark.sql(query)
         return df
 
-    def read_table_with_filters(self, df: DataFrame, table_name: str, filters: list[dict]):
+    def read_table_with_filters(self, table_name: str, filters: list[dict]):
         df = self.spark.table(f"clickhouse.{self.database}.{table_name}")
-        for f in filters:
-            df = df.filter(col(f["column"]) == f["value"])
+        for filter_dict in filters:
+            for column_name, value in filter_dict.items():
+                df = df.filter(col(column_name) == value)
 
         return df
 

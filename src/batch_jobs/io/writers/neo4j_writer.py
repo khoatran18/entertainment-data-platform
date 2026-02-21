@@ -77,22 +77,24 @@ class Neo4jWriter:
             target_properties: list[str],
             relationship_properties: list[str],
             partition_num: int = 1,
-            is_deleted_action: bool = False
+            action_col: str = "added"
     ):
-        action_type = "Add" if not is_deleted_action else "Remove"
-        logger.info("Start writing Relationship (%s Action) to Neo4j with relationship: %s", action_type, relationship)
+
+        is_deleted_action = True if action_col == "removed" else False
+        logger.info("Start writing Relationship (%s action) to Neo4j with relationship: %s", action_col, relationship)
         try:
             enriched_df = df.withColumn(DELETED_COL_FLAG, lit(is_deleted_action))
-            repartition_df = enriched_df.repartition(numPartitions=partition_num, *repartition_cols)
+            repartition_df = enriched_df.repartition(partition_num, *repartition_cols)
+            logger.info("--------------------------------------------source_keys: %s, target_keys: %s", ",".join(source_keys), ",".join(target_keys))
             repartition_df.write.format("org.neo4j.spark.DataSource") \
                 .mode("Overwrite") \
                 .option("relationship", relationship) \
                 .option("relationship.save.strategy", "keys") \
-                .option("relationship.source.save.mode", "merge") \
+                .option("relationship.source.save.mode", "Overwrite") \
                 .option("relationship.source.labels", f":{source_label}") \
                 .option("relationship.source.node.keys", ",".join(source_keys)) \
                 .option("relationship.source.node.properties", ",".join(source_properties)) \
-                .option("relationship.target.save.mode", "merge") \
+                .option("relationship.target.save.mode", "Overwrite") \
                 .option("relationship.target.labels", f":{target_label}") \
                 .option("relationship.target.node.keys", ",".join(target_keys)) \
                 .option("relationship.target.node.properties", ",".join(target_properties)) \
@@ -100,7 +102,7 @@ class Neo4jWriter:
                 .option("batch.size", self.settings.storage.neo4j.batch_size) \
                 .save()
 
-            logger.info("Finish writing Relationship (%s Action) to Neo4j with relationship: %s", action_type, relationship)
+            logger.info("Finish writing Relationship (%s action) to Neo4j with relationship: %s", action_col, relationship)
         except Exception as e:
-            logger.error("Error when writing Relationship (%s Action) to Neo4j with relationship: %s", action_type, relationship)
+            logger.error("Error when writing Relationship (%s action) to Neo4j with relationship: %s", action_col, relationship)
             raise e

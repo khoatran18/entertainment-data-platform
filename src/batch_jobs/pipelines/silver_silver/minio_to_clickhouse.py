@@ -3,7 +3,6 @@ import sys
 
 from batch_jobs.config.settings import load_settings
 from batch_jobs.io.readers.delta_minio_reader import DeltaMinioReader
-from batch_jobs.io.writers.clickhouse_jdbc_writer import ClickHouseJdbcWriter
 from batch_jobs.io.writers.clickhouse_native_writer import ClickHouseNativeWriter
 from batch_jobs.run_time.clickhouse.clickhouse_init import init_clickhouse
 from batch_jobs.run_time.clickhouse.prepare_clickhouse_native import prepare_clickhouse_native
@@ -17,12 +16,12 @@ from common.logging_config import setup_logging
 
 logger = logging.getLogger(__name__)
 
-def run_write_to_clickhouse():
+def write_minio_to_clickhouse():
     """
     Pipeline to write to Clickhouse from Delta Lake Minio (After dedup timestamp)
     """
     setup_logging()
-    logger.info("Batch jobs from Delta Minio to Minio to write to Clickhouse: Starting...")
+    logger.info("Batch jobs from Delta Minio to write to Clickhouse: Starting...")
     logger.info("Loading configuration...")
     settings = load_settings()
     logger.info("Configuration loaded")
@@ -37,7 +36,6 @@ def run_write_to_clickhouse():
     spark = builder.getOrCreate()
     spark = prepare_clickhouse_native(spark)
     delta_minio_reader = DeltaMinioReader(spark)
-    # clickhouse_writer = ClickHouseJdbcWriter(spark)
     clickhouse_writer = ClickHouseNativeWriter(spark)
 
     transform_map = {
@@ -95,5 +93,5 @@ def run_write_to_clickhouse():
     logger.info("Processing completed")
 
 if __name__ == "__main__":
-    run_write_to_clickhouse()
+    write_minio_to_clickhouse()
 

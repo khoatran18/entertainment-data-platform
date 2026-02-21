@@ -94,6 +94,8 @@ class StorageSettings(BaseModel):
 class SparkSettings(BaseModel):
     app_name_1: str
     app_name_2: str
+    app_name_3: str
+    app_name_4: str
 
 ##### Main settings
 class Settings(BaseModel):
