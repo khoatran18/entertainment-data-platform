@@ -1,0 +1,1 @@
+wget https://pinecone-jars.s3.amazonaws.com/1.2.0/spark-pinecone-uberjar.jar

@@ -13,3 +13,4 @@ pyaml
 confluent-kafka
 clickhouse-connect
 redis
+sentence-transformers

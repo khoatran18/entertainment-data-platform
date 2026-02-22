@@ -1,5 +1,4 @@
 import logging
-import sys
 
 from batch_jobs.config.settings import load_settings, Settings
 from batch_jobs.io.readers.clickhouse_reader import ClickHouseReader
@@ -179,7 +178,7 @@ def process_relationships(
                     )
                     logger.info(f"Finish processing relationship: {relationship}")
 
-def write_clickhouse_to_neo4j():
+def write_clickhouse_to_neo4j(transform_map=TRANSFORM_MAP):
     """
     Pipeline to write to Neo4j from ClickHouse
     """
@@ -202,12 +201,12 @@ def write_clickhouse_to_neo4j():
     logger.info("Starting processing...")
     # Nodes Process
     logger.info("Start processing node data...")
-    process_nodes(transform_map=TRANSFORM_MAP, settings=settings, redis_client=redis_client, clickhouse_reader=clickhouse_reader, neo4j_writer=neo4j_writer)
+    process_nodes(transform_map=transform_map, settings=settings, redis_client=redis_client, clickhouse_reader=clickhouse_reader, neo4j_writer=neo4j_writer)
     logger.info("Finish processing node data")
 
     # Relationship Process
     logger.info("Start processing relationship data...")
-    process_relationships(transform_map=TRANSFORM_MAP, settings=settings, redis_client=redis_client, clickhouse_reader=clickhouse_reader, neo4j_writer=neo4j_writer)
+    process_relationships(transform_map=transform_map, settings=settings, redis_client=redis_client, clickhouse_reader=clickhouse_reader, neo4j_writer=neo4j_writer)
     logger.info("Finish processing relationship data")
 
     logger.info("Processing completed")

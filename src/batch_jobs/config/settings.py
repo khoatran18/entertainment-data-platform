@@ -83,12 +83,24 @@ class Neo4jSettings(BaseModel):
     instance_name: str
     batch_size: int
 
+##### Pinecone Namespace Setting
+class PineconeNamespaceSettings(BaseModel):
+    movie: str
+    person: str
+    tv_series: str
+
+class PineconeSettings(BaseModel):
+    api_key: str
+    index_name: str
+    namespace: PineconeNamespaceSettings
+
 ##### Storage setting
 class StorageSettings(BaseModel):
     delta_lake: DeltaLakeSettings
     clickhouse: ClickhouseSettings
     redis: RedisSettings
     neo4j: Neo4jSettings
+    pinecone: PineconeSettings
 
 ##### Spark setting
 class SparkSettings(BaseModel):
@@ -142,45 +154,60 @@ def load_env(cfg):
     Load .env to config
     """
 
+    ##### Neo4j Env
     # Env NEO4J_URI
     if os.getenv("NEO4J_URI"):
         cfg["storage"]["neo4j"]["url"] = os.getenv("NEO4J_URI")
         logger.info("Set NEO4J_URI to config")
     else:
-        logger.warning("NEO4J_URI not found in env, use default value")
+        logger.warning("NEO4J_URI not found in env")
 
     # Env NEO4J_USERNAME and NEO4J_PASSWORD
     if os.getenv("NEO4J_USERNAME"):
         cfg["storage"]["neo4j"]["username"] = os.getenv("NEO4J_USERNAME")
         logger.info("Set NEO4J_USERNAME to config")
     else:
-        logger.warning("NEO4J_USERNAME not found in env, use default value")
+        logger.warning("NEO4J_USERNAME not found in env")
 
     if os.getenv("NEO4J_PASSWORD"):
         cfg["storage"]["neo4j"]["password"] = os.getenv("NEO4J_PASSWORD")
         logger.info("Set NEO4J_PASSWORD to config")
     else:
-        logger.warning("NEO4J_PASSWORD not found in env, use default value")
+        logger.warning("NEO4J_PASSWORD not found in env")
 
     # Env NEO4J_DATABASE
     if os.getenv("NEO4J_DATABASE"):
         cfg["storage"]["neo4j"]["database"] = os.getenv("NEO4J_DATABASE")
         logger.info("Set NEO4J_DATABASE to config")
     else:
-        logger.warning("NEO4J_DATABASE not found in env, use default value")
+        logger.warning("NEO4J_DATABASE not found in env")
 
     # Env AURA_INSTANCEID and AURA_INSTANCENAME
     if os.getenv("AURA_INSTANCEID"):
         cfg["storage"]["neo4j"]["instance_id"] = os.getenv("AURA_INSTANCEID")
         logger.info("Set AURA_INSTANCEID to config")
     else:
-        logger.warning("AURA_INSTANCEID not found in env, use default value")
+        logger.warning("AURA_INSTANCEID not found in env")
 
     if os.getenv("AURA_INSTANCENAME"):
         cfg["storage"]["neo4j"]["instance_name"] = os.getenv("AURA_INSTANCENAME")
         logger.info("Set AURA_INSTANCENAME to config")
     else:
-        logger.warning("AURA_INSTANCENAME not found in env, use default value")
+        logger.warning("AURA_INSTANCENAME not found in env")
+
+    ##### Pinecone Env
+    if os.getenv("PINECONE_API_KEY"):
+        cfg["storage"]["pinecone"]["api_key"] = os.getenv("PINECONE_API_KEY")
+        logger.info("Set PINECONE_API_KEY to config")
+    else:
+        logger.warning("PINECONE_API_KEY not found in env")
+
+    if os.getenv("PINECONE_INDEX_NAME"):
+        cfg["storage"]["pinecone"]["index_name"] = os.getenv("PINECONE_INDEX_NAME")
+        logger.info("Set PINECONE_INDEX_NAME to config")
+    else:
+        logger.warning("PINECONE_INDEX_NAME not found")
+
 
     return cfg
 

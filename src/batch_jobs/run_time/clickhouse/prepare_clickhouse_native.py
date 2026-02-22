@@ -14,9 +14,11 @@ def prepare_clickhouse_native(
     spark.conf.set("spark.sql.catalog.clickhouse.host", settings.storage.clickhouse.host)
     spark.conf.set("spark.sql.catalog.clickhouse.protocol", "http")
     spark.conf.set("spark.sql.catalog.clickhouse.http_port", settings.storage.clickhouse.port)
+    spark.conf.set("spark.sql.catalog.clickhouse.port", settings.storage.clickhouse.port)
+    spark.conf.set("spark.sql.catalog.clickhouse.compression", "none")
     spark.conf.set("spark.sql.catalog.clickhouse.user", settings.storage.clickhouse.username)
     spark.conf.set("spark.sql.catalog.clickhouse.password", settings.storage.clickhouse.password)
-    spark.conf.set("spark.sql.catalog.clickhouse.database", settings.storage.clickhouse.password)
+    spark.conf.set("spark.sql.catalog.clickhouse.database", settings.storage.clickhouse.database)
     spark.conf.set("spark.clickhouse.write.format", "json")
 
     return spark

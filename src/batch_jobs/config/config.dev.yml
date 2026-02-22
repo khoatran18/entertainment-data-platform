@@ -50,6 +50,14 @@ storage:
     instance_name: instance_name
     batch_size: 10
 
+  pinecone:
+    api_key: api_key
+    index_name: index_name,
+    namespace:
+      movie: movie_namespace
+      tv_series: tv_series_namespace
+      person: person_namespace
+
 spark:
   app_name_1: "run_dedup_timestamp"
   app_name_2: "write_to_clickhouse"
