@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from batch_jobs.config.settings import load_settings
+from batch_jobs.config.settings import load_settings, Settings
 from batch_jobs.io.readers.delta_minio_reader import DeltaMinioReader
 from batch_jobs.io.writers.clickhouse_native_writer import ClickHouseNativeWriter
 from batch_jobs.run_time.clickhouse.clickhouse_init import init_clickhouse
@@ -16,29 +16,7 @@ from common.logging_config import setup_logging
 
 logger = logging.getLogger(__name__)
 
-def write_minio_to_clickhouse():
-    """
-    Pipeline to write to Clickhouse from Delta Lake Minio (After dedup timestamp)
-    """
-    setup_logging()
-    logger.info("Batch jobs from Delta Minio to write to Clickhouse: Starting...")
-    logger.info("Loading configuration...")
-    settings = load_settings()
-    logger.info("Configuration loaded")
-
-    logger.info("Init Clickhouse Table...")
-    init_clickhouse()
-    logger.info("Finish init Clickhouse Table")
-
-    redis_client = RedisClient()
-
-    builder = create_spark_minio_clickhouse(app_name=settings.spark.app_name_2, settings=settings)
-    spark = builder.getOrCreate()
-    spark = prepare_clickhouse_native(spark)
-    delta_minio_reader = DeltaMinioReader(spark)
-    clickhouse_writer = ClickHouseNativeWriter(spark)
-
-    transform_map = {
+TRANSFORM_MAP = {
         "movie": [
             {"table_name": "movie", "transform_func": prepare_table_movie},
             {"table_name": "movie_cast", "transform_func": prepare_table_movie_cast},
@@ -54,7 +32,16 @@ def write_minio_to_clickhouse():
         ]
     }
 
-    logger.info("Starting processing...")
+def process_table(
+        settings: Settings,
+        redis_client: RedisClient,
+        delta_minio_reader: DeltaMinioReader,
+        clickhouse_writer: ClickHouseNativeWriter,
+        transform_map: dict = TRANSFORM_MAP
+):
+    """
+    Process table from Delta Lake Minio to Clickhouse
+    """
     for data_type, target_folder in settings.storage.delta_lake.target_name_folder:
         logger.info(f"Processing data type: {data_type}")
         # Get input paths and table list
@@ -89,6 +76,31 @@ def write_minio_to_clickhouse():
             clickhouse_writer.write_table(df=table_df, table_name=table_name)
             logger.info(f"Finish processing transform for Clickhouse table: {table_name}")
         logger.info(f"Finish processing data type: {data_type}")
+
+def write_minio_to_clickhouse():
+    """
+    Pipeline to write to Clickhouse from Delta Lake Minio (After dedup timestamp)
+    """
+    setup_logging()
+    logger.info("Batch jobs from Delta Minio to write to Clickhouse: Starting...")
+    logger.info("Loading configuration...")
+    settings = load_settings()
+    logger.info("Configuration loaded")
+
+    logger.info("Init Clickhouse Table...")
+    init_clickhouse()
+    logger.info("Finish init Clickhouse Table")
+
+    redis_client = RedisClient()
+
+    builder = create_spark_minio_clickhouse(app_name=settings.spark.app_name_2, settings=settings)
+    spark = builder.getOrCreate()
+    spark = prepare_clickhouse_native(spark)
+    delta_minio_reader = DeltaMinioReader(spark)
+    clickhouse_writer = ClickHouseNativeWriter(spark)
+
+    logger.info("Starting processing...")
+    process_table(settings=settings, redis_client=redis_client, delta_minio_reader=delta_minio_reader, clickhouse_writer=clickhouse_writer)
 
     logger.info("Processing completed")
 

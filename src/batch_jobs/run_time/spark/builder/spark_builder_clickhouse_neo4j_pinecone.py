@@ -27,6 +27,7 @@ def create_spark_clickhouse_neo4j_pinecone(
         .config("spark.driver.bindAddress", "127.0.0.1") \
         .config("spark.driver.host", "127.0.0.1") \
         .config("spark.jars.packages",",".join(packages)) \
+        .config("spark.jars", ",".join(jars)) \
         .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
         .config("spark.hadoop.fs.s3a.endpoint", settings.storage.delta_lake.minio_endpoint) \
         .config("spark.hadoop.fs.s3a.access.key", settings.storage.delta_lake.minio_access_key) \
@@ -35,21 +36,7 @@ def create_spark_clickhouse_neo4j_pinecone(
         .config("neo4j.url", settings.storage.neo4j.url) \
         .config("neo4j.authentication.basic.username", settings.storage.neo4j.username) \
         .config("neo4j.authentication.basic.password", settings.storage.neo4j.password) \
-        .config("neo4j.database", settings.storage.neo4j.database) \
-        .config("spark.jars", ",".join(jars))
-        # .config("spark.driver.userClassPathFirst", "true") \
-        # .config("spark.executor.userClassPathFirst", "true") \
-        # .config(
-        #     "spark.jars.excludes",
-        #     ",".join([
-        #         "org.antlr:antlr4-runtime",
-        #         "org.antlr:antlr-runtime",
-        #         "com.fasterxml.jackson.core:jackson-databind",
-        #         "com.fasterxml.jackson.core:jackson-core",
-        #         "com.fasterxml.jackson.core:jackson-annotations",
-        #         "com.fasterxml.jackson.module:jackson-module-scala_2.12"
-        #     ])
-        # )
+        .config("neo4j.database", settings.storage.neo4j.database)
 
 
     return builder

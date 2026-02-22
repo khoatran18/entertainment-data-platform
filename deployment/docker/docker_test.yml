@@ -49,7 +49,7 @@ services:
     command: server --console-address ":9001" /data
 
   clickhouse:
-    image: clickhouse/clickhouse-server:23.8.3
+    image: clickhouse/clickhouse-server
     container_name: clickhouse
     restart: unless-stopped
     ports:

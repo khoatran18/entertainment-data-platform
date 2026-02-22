@@ -10,11 +10,17 @@ from batch_jobs.schema.vector_df_schema import SPARSE_SCHEMA
 # model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 
 def get_embed_udf(model_name: str = "sentence-transformers/all-MiniLM-L6-v2"):
+    """
+    Create UDF to embed text into vector
+    """
 
     model_holder = {"model": None}
 
     @pandas_udf(ArrayType(FloatType()))
     def embed_udf(texts: pd.Series) -> pd.Series:
+        """
+        Embed text column into vector
+        """
         if model_holder["model"] is None:
             from sentence_transformers import SentenceTransformer
             model_holder["model"] = SentenceTransformer(model_name)
@@ -33,6 +39,9 @@ def prepare_vector_col(
         vector_prepare_cols: list[str],
         vector_col_name: str = "document"
 ):
+    """
+    Concatenate columns to create a full vector column
+    """
     target_df = df.withColumn(vector_col_name, concat_ws(
         " | ",
         *[col(c) for c in vector_prepare_cols]
@@ -48,6 +57,9 @@ def prepare_vector_schema(
         vector_col_name: str = "document",
         metadata: str = "None"
 ):
+    """
+    Prepare DataFrame with the required schema to write to Pinecone
+    """
     embed_udf = get_embed_udf(model_name)
     vector_df = prepare_vector_col(df, vector_prepare_cols, vector_col_name)
     target_df = vector_df.withColumn("id", col(id_col).cast(StringType())) \

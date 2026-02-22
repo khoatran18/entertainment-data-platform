@@ -13,6 +13,9 @@ class  PineconeWriter:
             self,
             df: DataFrame
     ):
+        """
+        Write DataFrame to Pinecone
+        """
         df.write \
             .option("pinecone.apiKey", self.settings.storage.pinecone.api_key) \
             .option("pinecone.indexName", self.settings.storage.pinecone.index_name) \
