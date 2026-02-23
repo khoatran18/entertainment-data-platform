@@ -1,0 +1,4 @@
+**/collector/*
+**/ingestion/*
+**/stream_processing/*
+**/test/*
