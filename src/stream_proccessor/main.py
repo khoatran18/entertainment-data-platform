@@ -8,6 +8,7 @@ from common.logging_config import setup_logging
 from common.load_path_config import get_valid_invalid_path
 from stream_proccessor.config.settings import load_settings
 from stream_proccessor.processor.event_processor import process_event
+from stream_proccessor.runtime.minio_client import MinioClient
 from stream_proccessor.sinks.delta_lake_sink import delta_lake_sink, delta_lake_sink_dql
 from stream_proccessor.sources.kafka_source import read_kafka_stream
 
@@ -21,10 +22,15 @@ def log_batch(df, batch_id):
 def run_stream():
     # Initial setup
     setup_logging()
-    logger.info("Streaming Processor service starting...")
     logger.info("Loading configuration...")
     settings = load_settings()
     logger.info("Configuration loaded")
+
+    # Create bucket
+    minio_client = MinioClient()
+    bucket_name = settings.sinks.delta_lake.core_bucket
+    minio_client.make_bucket_if_not_exists(bucket_name)
+    logger.info("Streaming Processor service starting...")
 
     queries = []
 

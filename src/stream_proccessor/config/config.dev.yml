@@ -13,8 +13,10 @@ stream:
 sinks:
   delta_lake:
     minio_endpoint: "http://localhost:9000"
+    minio_endpoint_sdk: "localhost:9000"
     minio_access_key: "minio"
     minio_secret_key: "minio123"
+    core_bucket: "deltalake"
     target_name_folder:
       movie: "movies"
       tv_series: "tvseries"

@@ -43,8 +43,10 @@ class DeltaLakeCheckpointsSettings(BaseModel):
 
 class DeltaLakeSettings(BaseModel):
     minio_endpoint: str
+    minio_endpoint_sdk: str
     minio_access_key: str
     minio_secret_key: str
+    core_bucket: str
     target_name_folder: DeltaLakeTargetNameFolderSettings
     tables: DeltaLakeTablesSettings
     checkpoints: DeltaLakeCheckpointsSettings
