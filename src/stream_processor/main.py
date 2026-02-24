@@ -6,11 +6,11 @@ from delta import *
 
 from common.logging_config import setup_logging
 from common.load_path_config import get_valid_invalid_path
-from stream_proccessor.config.settings import load_settings
-from stream_proccessor.processor.event_processor import process_event
-from stream_proccessor.runtime.minio_client import MinioClient
-from stream_proccessor.sinks.delta_lake_sink import delta_lake_sink, delta_lake_sink_dql
-from stream_proccessor.sources.kafka_source import read_kafka_stream
+from stream_processor.config.settings import load_settings
+from stream_processor.processor.event_processor import process_event
+from stream_processor.runtime.minio_client import MinioClient
+from stream_processor.sinks.delta_lake_sink import delta_lake_sink, delta_lake_sink_dql
+from stream_processor.sources.kafka_source import read_kafka_stream
 
 logger = logging.getLogger(__name__)
 

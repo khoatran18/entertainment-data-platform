@@ -16,3 +16,5 @@ redis
 sentence-transformers
 graphviz
 minio
+# kubernetes
+# apache-airflow-providers-cncf-kubernetes

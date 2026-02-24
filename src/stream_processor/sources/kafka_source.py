@@ -2,7 +2,7 @@ import logging
 
 from pyspark.sql import SparkSession, DataFrame
 
-from stream_proccessor.config.settings import Settings
+from stream_processor.config.settings import Settings
 
 logger = logging.getLogger(__name__)
 

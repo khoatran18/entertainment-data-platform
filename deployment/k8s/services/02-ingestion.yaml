@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingestion
+  namespace: data-platform
+  labels:
+    app: ingestion
+spec:
+  selector:
+    matchLabels:
+      app: ingestion
+  template:
+    metadata:
+      labels:
+        app: ingestion
+    spec:
+      containers:
+        - name: ingestion
+          image: khoa2k4/entertainment_data_platform:ingestion_v1
+          imagePullPolicy: Always
+          env:
+            - name: APP_ENV
+              value: prod
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1"
+            limits:
+              memory: "3Gi"
+              cpu: "2"

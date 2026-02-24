@@ -10,6 +10,8 @@ from ingestion.producer.kafka_producer import KafkaProducerService
 
 
 def main():
+    import sys
+    print("SYS PATH =", sys.path)
 
     setup_logging()
     logger = logging.getLogger(__name__)

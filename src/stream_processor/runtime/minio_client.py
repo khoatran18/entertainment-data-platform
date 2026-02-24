@@ -3,7 +3,7 @@ import logging
 from minio import Minio
 
 from common.logging_config import setup_logging
-from stream_proccessor.config.settings import load_settings
+from stream_processor.config.settings import load_settings
 
 logger = logging.getLogger(__name__)
 

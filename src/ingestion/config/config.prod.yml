@@ -4,6 +4,7 @@ kafka:
     tv_series: tmdb.tv_series.raw
     person: tmdb.people.raw
   server:
-    bootstrap_servers: localhost:9092
+    bootstrap_servers: kafka-internal:9092
   producer:
     retries: 3
+    max_buffer: 10

@@ -3,7 +3,7 @@ import logging
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import from_json, col, coalesce, current_timestamp
 
-from stream_proccessor.schema.event_schema import PARTIAL_EVENT_SCHEMA, ID_SCHEMA
+from stream_processor.schema.event_schema import PARTIAL_EVENT_SCHEMA, ID_SCHEMA
 
 logger = logging.getLogger(__name__)
 

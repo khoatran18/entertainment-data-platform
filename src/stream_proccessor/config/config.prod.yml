@@ -1,9 +1,0 @@
-kafka:
-  topics:
-    movie: tmdb.movies.raw
-    tv_series: tmdb.tv_series.raw
-    person: tmdb.people.raw
-  server:
-    bootstrap_servers: localhost:9092
-  producer:
-    retries: 3
