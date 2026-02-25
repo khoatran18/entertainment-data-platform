@@ -21,10 +21,11 @@
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=flat&logo=kubernetes&logoColor=white)](https://kubernetes.io/)
 
 [Project Overview](#-project-overview) •
-[System Architecture](#-system-architecture) •
-[Folder Structure](#-folder-structure) •
+[Platform Features](#-platform-features) •
+[Tech Stack](#-tech-stack) •
 [Quick Start](#-quick-start) •
-[Documentation](#-documentation)
+[Folder Structure](#folder-structure) •
+[System Architecture](#system-architecture)
 
 </div>
 
@@ -34,7 +35,7 @@
 
 The **Entertainment Data Platform** is a high-performance data engineering ecosystem built to process and organize large-scale Movies, TV Series, and People data. 
 
-By implementing a **Medallion Architecture (Bronze → Silver → Gold)** powered by **Delta Lake**, the platform effectively bridges the gap between raw, chaotic Kafka streams and specialized downstream applications. The system ensures data reliability through ACID transactions and optimizes performance by using an **intelligent change-tracking mechanism**, ensuring updates to expensive Graph (Neo4j) and Vector (Pinecone) databases with high efficiency.
+By implementing a Medallion Architecture (Bronze → Silver → Gold) powered by Delta Lake, the platform effectively bridges the gap between raw, chaotic Kafka streams and specialized downstream applications. The system ensures data reliability through ACID transactions and optimizes performance by using an **intelligent change-tracking mechanism**, ensuring updates to expensive Graph (Neo4j) and Vector (Pinecone) databases with high efficiency.
 
 ### Core Objectives:
 * **Scalable Ingestion:** Handling high-velocity data with Spark Streaming and Kafka.
@@ -44,17 +45,31 @@ By implementing a **Medallion Architecture (Bronze → Silver → Gold)** powere
 
 ## ✨ Platform Features
 
-* **High-Throughput Stream Processing:** Leverages **Spark Structured Streaming** to ingest and validate data from **Apache Kafka**.
-* **Fault-Tolerant Ingestion (DLQ):** Features a built-in "Lightweight Parsing" mechanism. If critical fields cannot be parsed due to schema evolution or corruption, records are routed to a **Dead Letter Queue (DLQ)** on MinIO instead of halting the entire pipeline.
+* **High-Throughput Stream Processing:** Leverages Spark Structured Streaming to ingest and validate data from Apache Kafka.
+
+
+* **Fault-Tolerant Ingestion (DLQ):** Features a built-in "Lightweight Parsing" mechanism. If critical fields cannot be parsed due to schema evolution or corruption, records are routed to a Dead Letter Queue (DLQ) on MinIO instead of halting the entire pipeline.
+
+
 * **Structured Medallion Architecture:**
     * **Bronze Layer:** Immutable raw data storage for auditing and re-processing.
-    * **Silver Layer:** Cleaned and deduplicated data using Delta Lake’s **Upsert (Merge)** logic, ensuring a "Single Source of Truth."
+    * **Silver Layer:** Cleaned and deduplicated data using Delta Lake’s Upsert (Merge) logic, ensuring a "Single Source of Truth."
     * **Gold Layer:** Business-ready tables optimized for specific query patterns.
-* **Real-time Analytics Ready:** Fully integrated with **ClickHouse** to provide ultra-fast OLAP capabilities for statistical reporting and interactive dashboards.
-* **Relationship Exploration (Knowledge Graph):** Synchronizes refined data to **Neo4j**, enabling deep-link traversal between Movies, TV Shows, and their respective Cast and Crew.
-* **Semantic Search & RAG Support:** Encodes and stores data in **Pinecone** vector database, providing the foundation for AI-powered recommendation systems and Retrieval-Augmented Generation (RAG).
+
+
+* **Real-time Analytics Ready:** Fully integrated with **ClickHouse to provide ultra-fast OLAP capabilities for statistical reporting and interactive dashboards.
+
+
+* **Relationship Exploration (Knowledge Graph):** Synchronizes refined data to **Neo4j, enabling deep-link traversal between Movies, TV Shows, and their respective Cast and Crew.
+
+
+* **Semantic Search & RAG Support:** Encodes and stores data in Pinecone vector database, providing the foundation for AI-powered recommendation systems and Retrieval-Augmented Generation (RAG).
+
+
 * **Change-Driven Sync Logic:** A sophisticated batch refinement process that detects changes in relationship or embedding-related fields. It ensures that downstream updates (Neo4j/Pinecone) only occur when data has actually changed, drastically reducing overhead.
-* **Production-Ready Deployment:** Seamlessly transitions from local development to scale-out production using **Docker Compose** and **Kubernetes (K8s)** manifests.
+
+
+* **Production-Ready Deployment:** Seamlessly transitions from local development to scale-out production using Docker Compose and Kubernetes (K8s) manifests.
 
 ---
 
@@ -87,11 +102,11 @@ pip install -r requirements.txt
 ### 2. Start infrastructure (Kafka + Databases)
 ```bash
 cd deployment/docker
-docker compose -f docker_test.yml up -d
+docker compose -f docker_compose.yml up -d
 ```
 
 ### 3. Run ingestion (send events to Kafka)
-Từ thư mục gốc project:
+From root directory:
 ```bash
 export PYTHONPATH=$(pwd)/src
 python -m ingestion.main
@@ -103,10 +118,10 @@ python -m stream_processor.main
 ```
 
 ### 5. Run batch pipelines
-Chạy lần lượt các pipeline để tinh lọc và đồng bộ dữ liệu:
+Run step  by step:
 
 ```bash
-# Step 1: Bronze to Silver (Deduplication)
+# Step 1: Bronze to Silver (Deduplication, Change Tracking)
 python -m batch_jobs.pipelines.bronze_silver.minio_to_minio
 
 # Step 2: Silver to ClickHouse (Analytical Layer)
@@ -121,45 +136,62 @@ python -m batch_jobs.pipelines.silver_gold.clickhouse_to_pinecone
 
 ---
 
-## Folder Structure
+## 📂 Folder Structure
 ```text
 ├── src
 │   ├── collector         # Crawling logic (TMDB API)
 │   ├── ingestion         # Kafka producers & data simulation
 │   ├── stream_processor  # Spark Streaming (Bronze)
 │   ├── batch_jobs        # Airflow DAGs & ETL pipelines (Silver/Gold)
-│   ├── common            # Shared utilities & schemas
-│   └── test              # Unit & Integration tests
-└── deployment
-    ├── docker            # Docker Compose for local dev/test
-    └── k8s               # Kubernetes manifests
+│   └── common            # Shared utilities & schemas
+├── deployment
+│   ├── docker            # Docker Compose configurations
+│   └── k8s               # Kubernetes manifests
+├── .gitignore            # Git ignore configuration
+├── LICENSE               # Project license
+└── requirements.txt      # Python dependencies
 ```
 
 ---
 
+## ⚙️ System Architecture
 
-## System Architecture
+![System Architecture](./asset/architecture.png)
 
 ### 1. Data Collection & Simulation
 * **Collector:** Crawler scripts for TMDB API (Movies, TV Series, People).
     * Datasets: [Kaggle](https://www.kaggle.com/datasets/khoatm2k4/tmdb-craw-dataset) | [HuggingFace](https://huggingface.co/datasets/tmkhoa/tmdb-craw-dataset/tree/main).
-    * *See details:* [src/collector/README.md](./src/collector/README.md).
+    * *See details:* [Collector](./src/collector/README.md).
+
+
 * **Ingestion:** Simulates real-world stream traffic. It loads shuffled records with labels (`old`, `new`, `change`) to Kafka, mimicking late-arriving data and updates to test system resilience.
-    * *See details:* [src/ingestion/README.md](./src/ingestion/README.md).
+    * *See details:* [Ingestion](./src/ingestion/README.md).
 
 ### 2. Stream Processing (Bronze Layer)
 * **Spark Structured Streaming:** Consumes from Kafka and performs "Lightweight Parsing".
+
+
 * **Performance & Schema Evolution:** To ensure high throughput and handle unstable schemas, the system only validates critical fields. 
+
+
 * **Error Handling:** Records that fail validation are routed to a **Dead Letter Storage** instead of halting the pipeline, ensuring 24/7 availability.
+
+
 * **Storage:** Saves raw events into **Delta Lake** on MinIO (Bronze Layer) for long-term auditing.
-    * *See details:* [src/stream_processor/README.md](./src/stream_processor/README.md).
+    * *See details:* [Stream Processor](./src/stream_processor/README.md).
 
 ### 3. Batch Jobs & Refinement (Silver & Gold Layer)
 Orchestrated by **Airflow** with the following logic:
 1.  **Deduplication (Bronze → Silver):** Handles chaotic data using Delta Lake's `upsert` (Merge) based on timestamps.
-2.  **Change Tracking:** During the Silver phase, the system identifies changes in **Relationship fields** (casts/crews) and **Embedding fields**. This metadata is crucial for the next steps.
+
+
+2. **Change Tracking:** During the Silver phase, the system identifies changes in **Relationship fields** (casts/crews) and **Embedding fields**. This metadata is crucial for the next steps.
+
+
 3.  **OLAP Transformation (Silver → ClickHouse):** Normalizes data into structured tables (Movies, Casts, Crews, etc.) in ClickHouse (Golden Layer) for fast analytics.
+
+
 4.  **Optimized Sync (Gold):** Refined data is synced to **Neo4j** (Graph) and **Pinecone** (Vector). 
     * *Efficiency:* Only records with detected changes in relationships or content are updated, significantly reducing API costs and write latency.
-    * *See details:* [src/batch_jobs/README.md](./src/batch_jobs/README.md).
+    * *See details:* [Batch Jobs](./src/batch_jobs/README.md).
 

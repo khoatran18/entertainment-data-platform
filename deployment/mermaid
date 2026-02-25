@@ -1,0 +1,49 @@
+graph TD
+    %% Orchestrator
+    Airflow((fa:fa-wind Airflow)) -.-> BatchLayer
+
+    %% Ingestion
+    Kafka((fa:fa-layer-group Kafka)) --> SparkStream[fa:fa-bolt Spark Streaming]
+
+    %% Storage Layers
+    SparkStream --> Bronze[(fa:fa-archive Bronze Layer)]
+    SparkStream -.-> DLQ[(fa:fa-exclamation-triangle DLQ)]
+
+    subgraph BatchLayer ["Batch Processing"]
+        direction TB
+
+        subgraph Stage1 [Refinement]
+            S1[Parsing] --> S2[Dedup]
+            S2 --> S3[Check Change]
+        end
+
+        Silver[(fa:fa-gem Silver Layer)]
+
+        subgraph GoldLayer ["Gold Layer (Serving)"]
+            direction TB
+            ClickHouse[(fa:fa-chart-bar ClickHouse)]
+
+            subgraph SpecialistDB ["Downstream Sync"]
+                direction LR
+                Neo4j[(fa:fa-share-alt Neo4j)]
+                Pinecone[(fa:fa-brain Pinecone)]
+                Neo4j ~~~ Pinecone
+            end
+
+            ClickHouse --> Neo4j
+            ClickHouse --> Pinecone
+        end
+
+        %% Flow
+        Bronze --> Stage1
+        Stage1 --> Silver
+        Silver --> ClickHouse
+    end
+
+    %% Styling
+    style Airflow fill:#017CEE,color:#fff
+    style GoldLayer fill:#fffbe6,stroke:#d4a017
+    style ClickHouse fill:#FFCC01,color:#000
+    style DLQ fill:#ff4d4d,color:#fff
+    style Bronze fill:#00ADD8,color:#fff
+    style Silver fill:#00ADD8,color:#fff
