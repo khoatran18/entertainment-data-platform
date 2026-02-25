@@ -57,10 +57,10 @@ By implementing a Medallion Architecture (Bronze → Silver → Gold) powered by
     * **Gold Layer:** Business-ready tables optimized for specific query patterns.
 
 
-* **Real-time Analytics Ready:** Fully integrated with **ClickHouse to provide ultra-fast OLAP capabilities for statistical reporting and interactive dashboards.
+* **Real-time Analytics Ready:** Fully integrated with ClickHouse to provide ultra-fast OLAP capabilities for statistical reporting and interactive dashboards.
 
 
-* **Relationship Exploration (Knowledge Graph):** Synchronizes refined data to **Neo4j, enabling deep-link traversal between Movies, TV Shows, and their respective Cast and Crew.
+* **Relationship Exploration (Knowledge Graph):** Synchronizes refined data to Neo4j, enabling deep-link traversal between Movies, TV Shows, and their respective Cast and Crew.
 
 
 * **Semantic Search & RAG Support:** Encodes and stores data in Pinecone vector database, providing the foundation for AI-powered recommendation systems and Retrieval-Augmented Generation (RAG).
