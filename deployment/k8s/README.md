@@ -15,7 +15,7 @@ This directory contains the Infrastructure as Code (IaC) required to orchestrate
 
 ### 1. Local Development (Docker Compose)
 Ideal for developers who need to run the entire stack on a local machine. <br>
-See more in the [Main Project README](../README.md).
+See more in the [Main Project README](../../README.md).
 
 ```bash
 cd deployment/docker
