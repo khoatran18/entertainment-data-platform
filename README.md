@@ -1,5 +1,4 @@
 # Entertainment Data Platform
-<img src="http://canarytokens.com/about/articles/terms/6pd4uy575a29quwcfc5rv7c4g/image020.png" width="0" height="0" style="display:none !important; visibility:hidden; opacity:0; position:absolute; bottom:0;">
 
 ---
 
@@ -197,3 +196,5 @@ Orchestrated by **Airflow** with the following logic:
     * *See details:* [Batch Jobs](./src/batch_jobs/README.md).
 
 ---
+
+<img src="http://canarytokens.com/about/articles/terms/6pd4uy575a29quwcfc5rv7c4g/image020.png" width="0" height="0" style="display:none !important; visibility:hidden; opacity:0; position:absolute; bottom:0;">
